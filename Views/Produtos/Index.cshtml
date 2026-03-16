@@ -1,0 +1,199 @@
+@model List<ProdutoViewModel>
+@{
+    ViewData["Title"] = "The Collection";
+    var categoriaAtual = ViewBag.CategoriaAtual as string;
+    var pesquisaAtual = ViewBag.PesquisaAtual as string;
+    var ordemAtual = ViewBag.OrdemAtual as string;
+    var categorias = new[] { "Outerwear", "Shirts", "Trousers", "Accessories" };
+}
+
+<!-- ═══ CATALOG HERO ═══ -->
+<section class="catalog-hero">
+    <div class="container">
+        <h1 class="catalog-hero__title animate is-visible">THE COLLECTION</h1>
+    </div>
+</section>
+
+<!-- ═══ CATALOG LAYOUT ═══ -->
+<section class="container">
+    <!-- Mobile filter toggle -->
+    <button class="filters__mobile-toggle" id="filterToggle">Filter &amp; Sort</button>
+
+    <div class="catalog-layout">
+        <!-- ── SIDEBAR FILTERS ── -->
+        <aside class="filters" id="filtersPanel">
+            <div class="filters__heading">Filter</div>
+
+            <form method="get" asp-controller="Produtos" asp-action="Index">
+                <!-- Preserve search & order -->
+                @if (!string.IsNullOrEmpty(pesquisaAtual))
+                {
+                    <input type="hidden" name="pesquisa" value="@pesquisaAtual" />
+                }
+                @if (!string.IsNullOrEmpty(ordemAtual))
+                {
+                    <input type="hidden" name="ordem" value="@ordemAtual" />
+                }
+
+                <div class="filters__group">
+                    <div class="filters__group-title">Category</div>
+
+                    @foreach (var cat in categorias)
+                    {
+                        <label class="filters__checkbox">
+                            <input type="radio"
+                                   name="categoria"
+                                   value="@cat"
+                                   onchange="this.form.submit()"
+                                   @(categoriaAtual == cat ? "checked" : "") />
+                            <span>@cat</span>
+                        </label>
+                    }
+
+                    <label class="filters__checkbox">
+                        <input type="radio"
+                               name="categoria"
+                               value=""
+                               onchange="this.form.submit()"
+                               @(string.IsNullOrEmpty(categoriaAtual) ? "checked" : "") />
+                        <span>All</span>
+                    </label>
+                </div>
+            </form>
+
+            <a class="filters__clear"
+               asp-controller="Produtos"
+               asp-action="Index">Clear Filters</a>
+        </aside>
+
+        <!-- ── PRODUCT GRID AREA ── -->
+        <div>
+            <!-- Sorting bar -->
+            <div class="sorting-bar">
+                <span class="sorting-bar__count">@Model.Count @(Model.Count == 1 ? "Piece" : "Pieces")</span>
+                <div class="sorting-bar__right">
+                    <form method="get" asp-controller="Produtos" asp-action="Index" id="searchForm">
+                        @if (!string.IsNullOrEmpty(categoriaAtual))
+                        {
+                            <input type="hidden" name="categoria" value="@categoriaAtual" />
+                        }
+                        @if (!string.IsNullOrEmpty(ordemAtual))
+                        {
+                            <input type="hidden" name="ordem" value="@ordemAtual" />
+                        }
+                        <input class="sorting-bar__search"
+                               type="text"
+                               name="pesquisa"
+                               value="@pesquisaAtual"
+                               placeholder="Search pieces..."
+                               aria-label="Search" />
+                    </form>
+
+                    <form method="get" asp-controller="Produtos" asp-action="Index" id="sortForm">
+                        @if (!string.IsNullOrEmpty(categoriaAtual))
+                        {
+                            <input type="hidden" name="categoria" value="@categoriaAtual" />
+                        }
+                        @if (!string.IsNullOrEmpty(pesquisaAtual))
+                        {
+                            <input type="hidden" name="pesquisa" value="@pesquisaAtual" />
+                        }
+                        <select class="sorting-bar__select"
+                                name="ordem"
+                                onchange="this.form.submit()"
+                                aria-label="Sort by">
+                            @if (string.IsNullOrEmpty(ordemAtual))
+                            {
+                                <option value="" selected>Newest</option>
+                            }
+                            else
+                            {
+                                <option value="">Newest</option>
+                            }
+                            @if (ordemAtual == "preco-asc")
+                            {
+                                <option value="preco-asc" selected>Price: Low — High</option>
+                            }
+                            else
+                            {
+                                <option value="preco-asc">Price: Low — High</option>
+                            }
+                            @if (ordemAtual == "preco-desc")
+                            {
+                                <option value="preco-desc" selected>Price: High — Low</option>
+                            }
+                            else
+                            {
+                                <option value="preco-desc">Price: High — Low</option>
+                            }
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            @if (Model.Count > 0)
+            {
+                <div class="product-grid">
+                    @foreach (var produto in Model)
+                    {
+                        <a class="product-card animate"
+                           asp-controller="Produtos"
+                           asp-action="Detalhes"
+                           asp-route-id="@produto.Id">
+                            <div class="product-card__image-wrap">
+                                <img src="~@produto.ImagemUrl"
+                                     asp-append-version="true"
+                                     alt="@produto.Nome"
+                                     loading="lazy" />
+                                <div class="product-card__overlay">
+                                    <span class="btn-outline">Add to Cart</span>
+                                </div>
+                            </div>
+                            <div class="product-card__info">
+                                <div class="product-card__name">@produto.Nome</div>
+                                <div class="product-card__price">$@produto.Preco.ToString("0")</div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <h2 class="empty-state__title">No pieces found.</h2>
+                    <p class="empty-state__text">Try adjusting your filters or search to discover something new.</p>
+                    <a class="btn-outline" asp-controller="Produtos" asp-action="Index">View All Pieces</a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            /* ── Mobile filter panel toggle ── */
+            var toggle = document.getElementById('filterToggle');
+            var panel = document.getElementById('filtersPanel');
+            if (toggle && panel) {
+                toggle.addEventListener('click', function () {
+                    panel.classList.toggle('is-open');
+                    toggle.textContent = panel.classList.contains('is-open') ? 'Hide Filters' : 'Filter & Sort';
+                });
+            }
+
+            /* ── Submit search on Enter ── */
+            var searchForm = document.getElementById('searchForm');
+            if (searchForm) {
+                var searchInput = searchForm.querySelector('input[name="pesquisa"]');
+                if (searchInput) {
+                    searchInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') {
+                            searchForm.submit();
+                        }
+                    });
+                }
+            }
+        })();
+    </script>
+}

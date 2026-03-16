@@ -1,51 +1,221 @@
-﻿@{
-    ViewData["Title"] = "Store";
+@{
+    ViewData["Title"] = "Home";
 }
 
-<section class="hero">
-    <video id="heroVideo" class="hero-video" muted playsinline preload="auto">
-        <source src="@Url.Content("~/Assets/background.mp4")" type="video/mp4" />
-    </video>
+<!-- ═══ HERO SECTION ═══ -->
+<section class="hero" style="margin-top: calc(var(--navbar-height) * -1);">
+    <img class="hero__bg" src="~/catalog/hero-editorial.svg" asp-append-version="true" alt="Hype Cartel editorial" />
+    <div class="hero__overlay"></div>
 
-    <div class="hero-overlay"></div>
-    <div class="hero-fade"></div>
+    <div class="hero__content">
+        <p class="hero__label animate animate--delay-1 is-visible">New Collection — SS26</p>
+        <h1 class="hero__title animate animate--delay-2 is-visible">GANGSTER CLOTHING</h1>
+        <p class="hero__subtitle animate animate--delay-3 is-visible">For Gentlemans.</p>
+        <div class="hero__actions animate animate--delay-4 is-visible">
+            <a class="btn-outline" asp-controller="Produtos" asp-action="Index">Shop the Collection</a>
+            <a class="btn-ghost" href="#featured">Explore Lookbook ↓</a>
+        </div>
+    </div>
 
-    <div class="hero-content">
-        <p class="eyebrow">GANGSTER CLOTHING BRAND FOR GENTLEMANS</p>
-        <a class="shop-btn" href="#products">SHOP NOW</a>
+    <div class="hero__scroll">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
     </div>
 </section>
 
-<section class="products" id="products">
-    <div class="products-header">
-        <p class="section-kicker">COLLECTION</p>
-        <h2>Featured Pieces</h2>
-    </div>
+<!-- ═══ FEATURED PIECES ═══ -->
+<section class="featured" id="featured">
+    <div class="container">
+        <div class="featured__header animate">
+            <span class="section-label">Collection</span>
+            <h2 class="section-title">Featured Pieces</h2>
+        </div>
 
-    <div class="product-grid">
-        <article class="product-card">
-            <div class="product-thumb"></div>
-            <h3>Don Vito Coat</h3>
-            <p>$189</p>
-        </article>
-        <article class="product-card">
-            <div class="product-thumb"></div>
-            <h3>Silk Noir Shirt</h3>
-            <p>$109</p>
-        </article>
-        <article class="product-card">
-            <div class="product-thumb"></div>
-            <h3>Family Ring</h3>
-            <p>$79</p>
-        </article>
-        <article class="product-card">
-            <div class="product-thumb"></div>
-            <h3>Empire Trousers</h3>
-            <p>$129</p>
-        </article>
+        <div class="product-grid">
+            <!-- 1. Shadow Overcoat -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="1">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/shadow-overcoat.svg" asp-append-version="true" alt="Shadow Overcoat" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Shadow Overcoat</div>
+                    <div class="product-card__price">$349</div>
+                </div>
+            </a>
+
+            <!-- 2. Phantom Bomber -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="2">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/phantom-bomber.svg" asp-append-version="true" alt="Phantom Bomber" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Phantom Bomber</div>
+                    <div class="product-card__price">$289</div>
+                </div>
+            </a>
+
+            <!-- 3. Silk Noir Shirt -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="5">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/silk-noir-shirt.svg" asp-append-version="true" alt="Silk Noir Shirt" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Silk Noir Shirt</div>
+                    <div class="product-card__price">$189</div>
+                </div>
+            </a>
+
+            <!-- 4. Gold Signet Ring -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="11">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/gold-signet-ring.svg" asp-append-version="true" alt="Gold Signet Ring" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Gold Signet Ring</div>
+                    <div class="product-card__price">$129</div>
+                </div>
+            </a>
+
+            <!-- 5. Noir Trench -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="3">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/noir-trench.svg" asp-append-version="true" alt="Noir Trench" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Noir Trench</div>
+                    <div class="product-card__price">$389</div>
+                </div>
+            </a>
+
+            <!-- 6. Ghost Linen Tee -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="6">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/ghost-linen-tee.svg" asp-append-version="true" alt="Ghost Linen Tee" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Ghost Linen Tee</div>
+                    <div class="product-card__price">$89</div>
+                </div>
+            </a>
+
+            <!-- 7. Eclipse Trousers -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="9">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/eclipse-trousers.svg" asp-append-version="true" alt="Eclipse Trousers" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Eclipse Trousers</div>
+                    <div class="product-card__price">$179</div>
+                </div>
+            </a>
+
+            <!-- 8. Onyx Chain -->
+            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="12">
+                <div class="product-card__image-wrap">
+                    <img src="~/catalog/onyx-chain.svg" asp-append-version="true" alt="Onyx Chain" loading="lazy" />
+                    <div class="product-card__overlay">
+                        <span class="btn-outline">Add to Cart</span>
+                    </div>
+                </div>
+                <div class="product-card__info">
+                    <div class="product-card__name">Onyx Chain</div>
+                    <div class="product-card__price">$159</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="featured__footer animate">
+            <a class="btn-outline" asp-controller="Produtos" asp-action="Index">View All Pieces</a>
+        </div>
     </div>
 </section>
 
-@section Scripts {
-    <script src="~/js/home.js" asp-append-version="true"></script>
-}
+<!-- ═══ BRAND MANIFESTO ═══ -->
+<section class="manifesto">
+    <div class="container">
+        <div class="manifesto__grid">
+            <div class="manifesto__text animate">
+                <span class="section-label">The House</span>
+                <h2 class="section-title">Our Manifesto</h2>
+                <p class="manifesto__quote">
+                    We don't follow seasons. We follow shadows. Every thread carries the weight of intention, every silhouette drawn from the architecture of the night.
+                </p>
+                <p class="manifesto__body">
+                    Hype Cartel exists at the intersection of darkness and refinement. Our garments are not worn — they are inhabited. Built for those who understand that true power is silent, and that style is the first language of respect.
+                </p>
+                <a class="btn-outline" asp-controller="Produtos" asp-action="Index">Explore the Collection</a>
+            </div>
+            <div class="manifesto__image animate">
+                <img src="~/catalog/manifesto-editorial.svg" asp-append-version="true" alt="Hype Cartel editorial" loading="lazy" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CATEGORIES ═══ -->
+<section class="categories">
+    <div class="container">
+        <div class="categories__header animate">
+            <span class="section-label">Browse</span>
+            <h2 class="section-title">Shop by Category</h2>
+        </div>
+
+        <div class="categories__grid">
+            <a class="category-tile animate" asp-controller="Produtos" asp-action="Index" asp-route-categoria="Outerwear">
+                <img src="~/catalog/category-outerwear.svg" asp-append-version="true" alt="Outerwear" loading="lazy" />
+                <div class="category-tile__overlay">
+                    <span class="category-tile__name">Outerwear</span>
+                </div>
+            </a>
+            <a class="category-tile animate" asp-controller="Produtos" asp-action="Index" asp-route-categoria="Shirts">
+                <img src="~/catalog/category-shirts.svg" asp-append-version="true" alt="Shirts" loading="lazy" />
+                <div class="category-tile__overlay">
+                    <span class="category-tile__name">Shirts</span>
+                </div>
+            </a>
+            <a class="category-tile animate" asp-controller="Produtos" asp-action="Index" asp-route-categoria="Accessories">
+                <img src="~/catalog/category-accessories.svg" asp-append-version="true" alt="Accessories" loading="lazy" />
+                <div class="category-tile__overlay">
+                    <span class="category-tile__name">Accessories</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══ -->
+<section class="newsletter">
+    <div class="container">
+        <div class="newsletter__inner animate">
+            <span class="section-label">Exclusive</span>
+            <h2 class="newsletter__title">Join the Family</h2>
+            <p class="newsletter__text">First access to new drops, private events, and the stories behind the stitches. No noise — only what matters.</p>
+            <form class="newsletter__form" onsubmit="return false;">
+                <input class="newsletter__input" type="email" placeholder="Your email address" aria-label="Email address" />
+                <button class="newsletter__submit" type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</section>

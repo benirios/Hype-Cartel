@@ -1,0 +1,88 @@
+@model List<CarrinhoItemViewModel>
+@{
+    ViewData["Title"] = "Your Bag";
+    var subtotal = Model.Sum(i => i.Subtotal);
+}
+
+<!-- ═══ CART HERO ═══ -->
+<section class="cart-hero">
+    <div class="container">
+        <h1 class="cart-hero__title">YOUR BAG</h1>
+    </div>
+</section>
+
+<!-- ═══ CART LAYOUT ═══ -->
+<section class="container">
+    @if (Model.Count > 0)
+    {
+        <div class="cart-layout">
+            <!-- ── CART ITEMS ── -->
+            <div class="cart-items">
+                @foreach (var item in Model)
+                {
+                    <div class="cart-item">
+                        <div class="cart-item__image">
+                            <img src="~@item.ImagemUrl"
+                                 asp-append-version="true"
+                                 alt="@item.Nome" />
+                        </div>
+                        <div>
+                            <div class="cart-item__name">@item.Nome</div>
+                            <div class="cart-item__meta">Size: @item.Tamanho</div>
+                        </div>
+                        <div class="qty-stepper">
+                            <button class="qty-stepper__btn" type="button" aria-label="Decrease quantity">−</button>
+                            <span class="qty-stepper__value">@item.Quantidade</span>
+                            <button class="qty-stepper__btn" type="button" aria-label="Increase quantity">+</button>
+                        </div>
+                        <div class="cart-item__price">$@item.Subtotal.ToString("0")</div>
+                        <button class="cart-item__remove" type="button" aria-label="Remove item">✕</button>
+                    </div>
+                }
+
+                <div class="cart-continue">
+                    <a class="btn-ghost" asp-controller="Produtos" asp-action="Index">← Continue Shopping</a>
+                </div>
+            </div>
+
+            <!-- ── ORDER SUMMARY ── -->
+            <div class="order-summary">
+                <div class="order-summary__title">Order Summary</div>
+
+                <div class="order-summary__row">
+                    <span class="order-summary__label">Subtotal</span>
+                    <span class="order-summary__value">$@subtotal.ToString("0")</span>
+                </div>
+                <div class="order-summary__row">
+                    <span class="order-summary__label">Shipping</span>
+                    <span class="order-summary__value">Calculated at checkout</span>
+                </div>
+
+                <div class="order-summary__row order-summary__total">
+                    <span class="order-summary__label">Estimated Total</span>
+                    <span class="order-summary__value">$@subtotal.ToString("0")</span>
+                </div>
+
+                <div class="order-summary__promo">
+                    <input class="order-summary__promo-input"
+                           type="text"
+                           placeholder="Promo code"
+                           aria-label="Promo code" />
+                    <button class="order-summary__promo-btn" type="button">Apply</button>
+                </div>
+
+                <button class="btn-primary order-summary__checkout" type="button">Proceed to Checkout</button>
+
+                <p class="order-summary__trust">Free Returns · Secure Payment · Express Delivery</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-cart">
+            <h2 class="empty-cart__title">Your bag is empty.</h2>
+            <p class="empty-cart__text">Looks like you haven't added anything yet. The collection awaits.</p>
+            <a class="btn-outline" asp-controller="Produtos" asp-action="Index">Explore the Collection</a>
+        </div>
+    }
+</section>

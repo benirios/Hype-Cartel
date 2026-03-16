@@ -1,0 +1,207 @@
+@model ProdutoViewModel
+@{
+    ViewData["Title"] = Model.Nome;
+    var relacionados = ViewBag.Relacionados as List<ProdutoViewModel> ?? new List<ProdutoViewModel>();
+}
+
+<!-- ═══ PRODUCT DETAIL ═══ -->
+<section class="detail">
+    <div class="container">
+        <div class="detail__grid">
+            <!-- ── LEFT: Gallery ── -->
+            <div class="detail__gallery">
+                <div class="detail__main-image" id="mainImage">
+                    <img src="~@Model.ImagemUrl"
+                         asp-append-version="true"
+                         alt="@Model.Nome"
+                         id="mainImg" />
+                </div>
+
+                @if (Model.ImagensAdicionais.Count > 0)
+                {
+                    <div class="detail__thumbnails">
+                        <button class="detail__thumb is-active" data-src="@Model.ImagemUrl">
+                            <img src="~@Model.ImagemUrl"
+                                 asp-append-version="true"
+                                 alt="@Model.Nome" />
+                        </button>
+                        @foreach (var img in Model.ImagensAdicionais)
+                        {
+                            <button class="detail__thumb" data-src="@img">
+                                <img src="~@img"
+                                     asp-append-version="true"
+                                     alt="@Model.Nome" />
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- ── RIGHT: Product Info ── -->
+            <div class="detail__info">
+                <div class="detail__category">@Model.Categoria</div>
+                <h1 class="detail__name">@Model.Nome</h1>
+                <div class="detail__price">$@Model.Preco.ToString("0")</div>
+                <p class="detail__description">@Model.Descricao</p>
+
+                @if (Model.Tamanhos.Count > 0)
+                {
+                    <div class="size-selector">
+                        <span class="size-selector__label">Size</span>
+                        <div class="size-selector__options" id="sizeSelector">
+                            @foreach (var tamanho in Model.Tamanhos)
+                            {
+                                <button class="size-selector__btn"
+                                        type="button"
+                                        data-size="@tamanho">@tamanho</button>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <button class="btn-primary detail__add-cart" type="button">Add to Cart</button>
+                <button class="btn-ghost detail__wishlist" type="button">Save to Wishlist</button>
+
+                <p class="detail__shipping-note">Free shipping on orders over $200</p>
+
+                <!-- ── Accordion ── -->
+                <div class="accordion" id="accordion">
+                    <div class="accordion__item">
+                        <button class="accordion__header" type="button">
+                            <span>Details</span>
+                            <svg class="accordion__icon" viewBox="0 0 12 12" aria-hidden="true">
+                                <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1"/>
+                                <line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/>
+                            </svg>
+                        </button>
+                        <div class="accordion__body">
+                            <div class="accordion__content">
+                                Designed in-house and produced in limited runs. Each piece is individually numbered. True to size — take your normal size for the intended fit. Model wears size L.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion__item">
+                        <button class="accordion__header" type="button">
+                            <span>Materials</span>
+                            <svg class="accordion__icon" viewBox="0 0 12 12" aria-hidden="true">
+                                <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1"/>
+                                <line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/>
+                            </svg>
+                        </button>
+                        <div class="accordion__body">
+                            <div class="accordion__content">
+                                Premium fabrics sourced from Italian and Japanese mills. All hardware is custom-developed. Garment-dyed where applicable for depth of color and a lived-in hand feel from day one.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion__item">
+                        <button class="accordion__header" type="button">
+                            <span>Shipping &amp; Returns</span>
+                            <svg class="accordion__icon" viewBox="0 0 12 12" aria-hidden="true">
+                                <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" stroke-width="1"/>
+                                <line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" stroke-width="1"/>
+                            </svg>
+                        </button>
+                        <div class="accordion__body">
+                            <div class="accordion__content">
+                                Free express shipping on orders over $200. Standard delivery 5–7 business days. Returns accepted within 14 days of delivery — items must be unworn with all tags attached.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ RELATED PRODUCTS ═══ -->
+@if (relacionados.Count > 0)
+{
+    <section class="related">
+        <div class="container">
+            <div class="related__header">
+                <span class="section-label">Discover</span>
+                <h2 class="section-title">You May Also Like</h2>
+            </div>
+
+            <div class="product-grid">
+                @foreach (var item in relacionados)
+                {
+                    <a class="product-card animate"
+                       asp-controller="Produtos"
+                       asp-action="Detalhes"
+                       asp-route-id="@item.Id">
+                        <div class="product-card__image-wrap">
+                            <img src="~@item.ImagemUrl"
+                                 asp-append-version="true"
+                                 alt="@item.Nome"
+                                 loading="lazy" />
+                            <div class="product-card__overlay">
+                                <span class="btn-outline">Add to Cart</span>
+                            </div>
+                        </div>
+                        <div class="product-card__info">
+                            <div class="product-card__name">@item.Nome</div>
+                            <div class="product-card__price">$@item.Preco.ToString("0")</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            /* ── Size selector toggle ── */
+            var sizeSelector = document.getElementById('sizeSelector');
+            if (sizeSelector) {
+                var buttons = sizeSelector.querySelectorAll('.size-selector__btn');
+                buttons.forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        buttons.forEach(function (b) { b.classList.remove('is-selected'); });
+                        btn.classList.add('is-selected');
+                    });
+                });
+            }
+
+            /* ── Thumbnail image switcher ── */
+            var thumbs = document.querySelectorAll('.detail__thumb');
+            var mainImg = document.getElementById('mainImg');
+            if (thumbs.length > 0 && mainImg) {
+                thumbs.forEach(function (thumb) {
+                    thumb.addEventListener('click', function () {
+                        thumbs.forEach(function (t) { t.classList.remove('is-active'); });
+                        thumb.classList.add('is-active');
+                        mainImg.setAttribute('src', thumb.getAttribute('data-src'));
+                    });
+                });
+            }
+
+            /* ── Accordion toggle ── */
+            var accordion = document.getElementById('accordion');
+            if (accordion) {
+                var headers = accordion.querySelectorAll('.accordion__header');
+                headers.forEach(function (header) {
+                    header.addEventListener('click', function () {
+                        var item = header.closest('.accordion__item');
+                        var isOpen = item.classList.contains('is-open');
+
+                        /* Close all */
+                        accordion.querySelectorAll('.accordion__item').forEach(function (el) {
+                            el.classList.remove('is-open');
+                        });
+
+                        /* Toggle clicked */
+                        if (!isOpen) {
+                            item.classList.add('is-open');
+                        }
+                    });
+                });
+            }
+        })();
+    </script>
+}
