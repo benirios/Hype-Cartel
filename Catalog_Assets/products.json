@@ -1,0 +1,57 @@
+[
+  {
+    "id": "prod-hoodie-001",
+    "name": "Mafia Logo Hoodie",
+    "sku": "HOOD-001",
+    "price": 59.99,
+    "currency": "USD",
+    "description": "Comfortable unisex hoodie with the MafiaStore logo.",
+    "categoryId": "cat-clothing",
+    "images": ["/Assets/hoodie-front.jpg","/Assets/hoodie-back.jpg"],
+    "stock": 120
+  },
+  {
+    "id": "prod-tee-001",
+    "name": "Mafia Tee - Black",
+    "sku": "TEE-001",
+    "price": 24.99,
+    "currency": "USD",
+    "description": "Classic black tee with subtle branding.",
+    "categoryId": "cat-clothing",
+    "images": ["/Assets/tee-black.jpg"],
+    "stock": 250
+  },
+  {
+    "id": "prod-cap-001",
+    "name": "Mafia Snapback Cap",
+    "sku": "CAP-001",
+    "price": 29.99,
+    "currency": "USD",
+    "description": "Adjustable snapback cap with embroidered logo.",
+    "categoryId": "cat-accessories",
+    "images": ["/Assets/cap.jpg"],
+    "stock": 75
+  },
+  {
+    "id": "prod-speaker-001",
+    "name": "Hype Speaker",
+    "sku": "SPK-001",
+    "price": 129.99,
+    "currency": "USD",
+    "description": "Portable Bluetooth speaker with premium sound.",
+    "categoryId": "cat-electronics",
+    "images": ["/Assets/speaker.jpg"],
+    "stock": 40
+  },
+  {
+    "id": "prod-mug-001",
+    "name": "Mafia Ceramic Mug",
+    "sku": "MUG-001",
+    "price": 12.99,
+    "currency": "USD",
+    "description": "12oz ceramic mug with logo.",
+    "categoryId": "cat-home",
+    "images": ["/Assets/mug.jpg"],
+    "stock": 180
+  }
+]
