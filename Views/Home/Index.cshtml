@@ -4,23 +4,17 @@
 
 <!-- ═══ HERO SECTION ═══ -->
 <section class="hero" style="margin-top: calc(var(--navbar-height) * -1);">
-    <img class="hero__bg" src="~/catalog/hero-editorial.svg" asp-append-version="true" alt="Hype Cartel editorial" />
+    <video class="hero__video" autoplay muted loop playsinline>
+        <source src="/Assets/background.mp4" type="video/mp4" />
+    </video>
     <div class="hero__overlay"></div>
+    <div class="hero__fade"></div>
 
     <div class="hero__content">
-        <p class="hero__label animate animate--delay-1 is-visible">New Collection — SS26</p>
-        <h1 class="hero__title animate animate--delay-2 is-visible">GANGSTER CLOTHING</h1>
-        <p class="hero__subtitle animate animate--delay-3 is-visible">For Gentlemans.</p>
-        <div class="hero__actions animate animate--delay-4 is-visible">
-            <a class="btn-outline" asp-controller="Produtos" asp-action="Index">Shop the Collection</a>
-            <a class="btn-ghost" href="#featured">Explore Lookbook ↓</a>
+        <h1 class="hero__heading animate animate--delay-1 is-visible">Gangster Clothing Brand for Gentlemans</h1>
+        <div class="hero__actions animate animate--delay-2 is-visible">
+            <a class="hero__btn" asp-controller="Produtos" asp-action="Index">Shop Now</a>
         </div>
-    </div>
-
-    <div class="hero__scroll">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        </svg>
     </div>
 </section>
 
