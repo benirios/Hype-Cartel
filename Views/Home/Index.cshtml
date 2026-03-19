@@ -1,5 +1,17 @@
 @{
     ViewData["Title"] = "Home";
+
+    var featuredPieces = new[]
+    {
+        new { Id = 1, Nome = "Shadow Overcoat", Preco = 349, Imagem = "~/catalog/shadow-overcoat.svg" },
+        new { Id = 2, Nome = "Phantom Bomber", Preco = 289, Imagem = "~/catalog/phantom-bomber.svg" },
+        new { Id = 5, Nome = "Silk Noir Shirt", Preco = 189, Imagem = "~/catalog/silk-noir-shirt.svg" },
+        new { Id = 11, Nome = "Gold Signet Ring", Preco = 129, Imagem = "~/catalog/gold-signet-ring.svg" },
+        new { Id = 3, Nome = "Noir Trench", Preco = 389, Imagem = "~/catalog/noir-trench.svg" },
+        new { Id = 6, Nome = "Ghost Linen Tee", Preco = 89, Imagem = "~/catalog/ghost-linen-tee.svg" },
+        new { Id = 9, Nome = "Eclipse Trousers", Preco = 179, Imagem = "~/catalog/eclipse-trousers.svg" },
+        new { Id = 12, Nome = "Onyx Chain", Preco = 159, Imagem = "~/catalog/onyx-chain.svg" }
+    };
 }
 
 <!-- ═══ HERO SECTION ═══ -->
@@ -11,8 +23,9 @@
     <div class="hero__fade"></div>
 
     <div class="hero__content">
-        <h1 class="hero__heading animate animate--delay-1 is-visible">Gangster Clothing Brand for Gentlemans</h1>
-        <div class="hero__actions animate animate--delay-2 is-visible">
+        <h1 class="hero__heading animate animate--delay-1 is-visible">Gangster Clothing Brand for Gentlemen</h1>
+        <p class="hero__subtitle animate animate--delay-2 is-visible">Luxury Streetwear. Worn in Silence.</p>
+        <div class="hero__actions animate animate--delay-3 is-visible">
             <a class="hero__btn" asp-controller="Produtos" asp-action="Index">Shop Now</a>
         </div>
     </div>
@@ -27,117 +40,32 @@
         </div>
 
         <div class="product-grid">
-            <!-- 1. Shadow Overcoat -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="1">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/shadow-overcoat.svg" asp-append-version="true" alt="Shadow Overcoat" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
+            @foreach (var piece in featuredPieces)
+            {
+                <div class="product-card animate">
+                    <div class="product-card__image-wrap">
+                        <a asp-controller="Produtos"
+                           asp-action="Detalhes"
+                           asp-route-id="@piece.Id"
+                           aria-label="View @piece.Nome details">
+                            <img src="@piece.Imagem" asp-append-version="true" alt="@piece.Nome" loading="lazy" />
+                        </a>
+                        <form class="product-card__overlay" method="post" action="/Carrinho/Adicionar">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="produtoId" value="@piece.Id" />
+                            <input type="hidden" name="tamanho" value="M" />
+                            <button class="btn-outline" type="submit">Add to Cart</button>
+                        </form>
                     </div>
+                    <a class="product-card__info"
+                       asp-controller="Produtos"
+                       asp-action="Detalhes"
+                       asp-route-id="@piece.Id">
+                        <div class="product-card__name">@piece.Nome</div>
+                        <div class="product-card__price">$@piece.Preco</div>
+                    </a>
                 </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Shadow Overcoat</div>
-                    <div class="product-card__price">$349</div>
-                </div>
-            </a>
-
-            <!-- 2. Phantom Bomber -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="2">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/phantom-bomber.svg" asp-append-version="true" alt="Phantom Bomber" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Phantom Bomber</div>
-                    <div class="product-card__price">$289</div>
-                </div>
-            </a>
-
-            <!-- 3. Silk Noir Shirt -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="5">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/silk-noir-shirt.svg" asp-append-version="true" alt="Silk Noir Shirt" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Silk Noir Shirt</div>
-                    <div class="product-card__price">$189</div>
-                </div>
-            </a>
-
-            <!-- 4. Gold Signet Ring -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="11">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/gold-signet-ring.svg" asp-append-version="true" alt="Gold Signet Ring" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Gold Signet Ring</div>
-                    <div class="product-card__price">$129</div>
-                </div>
-            </a>
-
-            <!-- 5. Noir Trench -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="3">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/noir-trench.svg" asp-append-version="true" alt="Noir Trench" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Noir Trench</div>
-                    <div class="product-card__price">$389</div>
-                </div>
-            </a>
-
-            <!-- 6. Ghost Linen Tee -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="6">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/ghost-linen-tee.svg" asp-append-version="true" alt="Ghost Linen Tee" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Ghost Linen Tee</div>
-                    <div class="product-card__price">$89</div>
-                </div>
-            </a>
-
-            <!-- 7. Eclipse Trousers -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="9">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/eclipse-trousers.svg" asp-append-version="true" alt="Eclipse Trousers" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Eclipse Trousers</div>
-                    <div class="product-card__price">$179</div>
-                </div>
-            </a>
-
-            <!-- 8. Onyx Chain -->
-            <a class="product-card animate" asp-controller="Produtos" asp-action="Detalhes" asp-route-id="12">
-                <div class="product-card__image-wrap">
-                    <img src="~/catalog/onyx-chain.svg" asp-append-version="true" alt="Onyx Chain" loading="lazy" />
-                    <div class="product-card__overlay">
-                        <span class="btn-outline">Add to Cart</span>
-                    </div>
-                </div>
-                <div class="product-card__info">
-                    <div class="product-card__name">Onyx Chain</div>
-                    <div class="product-card__price">$159</div>
-                </div>
-            </a>
+            }
         </div>
 
         <div class="featured__footer animate">
@@ -177,20 +105,29 @@
         </div>
 
         <div class="categories__grid">
-            <a class="category-tile animate" asp-controller="Produtos" asp-action="Index" asp-route-categoria="Outerwear">
-                <img src="~/catalog/category-outerwear.svg" asp-append-version="true" alt="Outerwear" loading="lazy" />
+            <a class="category-tile category-tile--outerwear animate"
+               style="background: linear-gradient(140deg, #0d0d0d 0%, #1b1b1b 45%, #17120b 100%);"
+               asp-controller="Produtos"
+               asp-action="Index"
+               asp-route-categoria="Outerwear">
                 <div class="category-tile__overlay">
                     <span class="category-tile__name">Outerwear</span>
                 </div>
             </a>
-            <a class="category-tile animate" asp-controller="Produtos" asp-action="Index" asp-route-categoria="Shirts">
-                <img src="~/catalog/category-shirts.svg" asp-append-version="true" alt="Shirts" loading="lazy" />
+            <a class="category-tile category-tile--shirts animate"
+               style="background: linear-gradient(150deg, #0b0b0b 0%, #1a1918 50%, #141414 100%);"
+               asp-controller="Produtos"
+               asp-action="Index"
+               asp-route-categoria="Shirts">
                 <div class="category-tile__overlay">
                     <span class="category-tile__name">Shirts</span>
                 </div>
             </a>
-            <a class="category-tile animate" asp-controller="Produtos" asp-action="Index" asp-route-categoria="Accessories">
-                <img src="~/catalog/category-accessories.svg" asp-append-version="true" alt="Accessories" loading="lazy" />
+            <a class="category-tile category-tile--accessories animate"
+               style="background: linear-gradient(145deg, #090909 0%, #1a1a1a 45%, #17130e 100%);"
+               asp-controller="Produtos"
+               asp-action="Index"
+               asp-route-categoria="Accessories">
                 <div class="category-tile__overlay">
                     <span class="category-tile__name">Accessories</span>
                 </div>
@@ -206,7 +143,7 @@
             <span class="section-label">Exclusive</span>
             <h2 class="newsletter__title">Join the Family</h2>
             <p class="newsletter__text">First access to new drops, private events, and the stories behind the stitches. No noise — only what matters.</p>
-            <form class="newsletter__form" onsubmit="return false;">
+            <form class="newsletter__form" action="#" method="post">
                 <input class="newsletter__input" type="email" placeholder="Your email address" aria-label="Email address" />
                 <button class="newsletter__submit" type="submit">Subscribe</button>
             </form>

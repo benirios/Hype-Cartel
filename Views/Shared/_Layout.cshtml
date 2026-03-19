@@ -13,21 +13,34 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        var cartCount = ViewBag.CartCount is int count ? count : 0;
+    }
+
     <!-- ═══ NAVBAR ═══ -->
     <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="navbar__left">
             <!-- Search icon -->
-            <a class="navbar__icon" href="#" aria-label="Search">
+            <button class="navbar__icon"
+                    id="openSearch"
+                    type="button"
+                    aria-label="Open search"
+                    aria-controls="searchOverlay"
+                    aria-expanded="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="11" cy="11" r="7"></circle>
                     <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
                 </svg>
-            </a>
+            </button>
             <!-- Desktop nav links -->
             <div class="navbar__nav">
                 <a class="navbar__link" asp-controller="Produtos" asp-action="Index">Store</a>
                 <a class="navbar__link" asp-controller="Produtos" asp-action="Index">Collections</a>
                 <a class="navbar__link" asp-controller="Home" asp-action="Index">About</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="navbar__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
+                }
             </div>
         </div>
 
@@ -36,12 +49,29 @@
 
         <div class="navbar__right">
             <!-- Account icon -->
-            <a class="navbar__icon" href="#" aria-label="Account">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="8" r="3.5"></circle>
-                    <path d="M5.5 21c0-4 2.5-6.5 6.5-6.5s6.5 2.5 6.5 6.5"></path>
-                </svg>
-            </a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post" class="navbar__logout-form">
+                    @Html.AntiForgeryToken()
+                    <button class="navbar__icon" type="submit" aria-label="Logout">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M10 17l5-5-5-5"></path>
+                            <path d="M15 12H3"></path>
+                            <path d="M21 21H11a2 2 0 0 1-2-2v-2"></path>
+                            <path d="M21 3H11a2 2 0 0 0-2 2v2"></path>
+                        </svg>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a class="navbar__icon" asp-controller="Account" asp-action="Login" aria-label="Account Login">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="8" r="3.5"></circle>
+                        <path d="M5.5 21c0-4 2.5-6.5 6.5-6.5s6.5 2.5 6.5 6.5"></path>
+                    </svg>
+                </a>
+            }
             <!-- Cart icon with badge -->
             <a class="navbar__icon" asp-controller="Carrinho" asp-action="Index" aria-label="Cart">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -50,7 +80,7 @@
                     <circle cx="18" cy="20" r="1"></circle>
                     <path d="M1 1h4l1 5"></path>
                 </svg>
-                <span class="cart-badge">2</span>
+                <span class="cart-badge" data-count="@cartCount">@(ViewBag.CartCount ?? 0)</span>
             </a>
             <!-- Hamburger (mobile only) -->
             <button class="navbar__hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -66,7 +96,42 @@
         <a class="mobile-menu__link" asp-controller="Produtos" asp-action="Index">Store</a>
         <a class="mobile-menu__link" asp-controller="Produtos" asp-action="Index">Collections</a>
         <a class="mobile-menu__link" asp-controller="Home" asp-action="Index">About</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="mobile-menu__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
+        }
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form asp-controller="Account" asp-action="Logout" method="post" class="mobile-menu__logout-form">
+                @Html.AntiForgeryToken()
+                <button class="mobile-menu__link mobile-menu__link--button" type="submit">Logout</button>
+            </form>
+        }
+        else
+        {
+            <a class="mobile-menu__link" asp-controller="Account" asp-action="Login">Login</a>
+        }
         <a class="mobile-menu__link" asp-controller="Carrinho" asp-action="Index">Cart</a>
+    </div>
+
+    <!-- ═══ SEARCH OVERLAY ═══ -->
+    <div class="search-overlay" id="searchOverlay" aria-hidden="true">
+        <button class="search-overlay__close" id="closeSearch" type="button" aria-label="Close search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <line x1="5" y1="5" x2="19" y2="19"></line>
+                <line x1="19" y1="5" x2="5" y2="19"></line>
+            </svg>
+        </button>
+        <form class="search-overlay__form" method="get" asp-controller="Produtos" asp-action="Index">
+            <label class="search-overlay__label" for="searchOverlayInput">Search the collection</label>
+            <input class="search-overlay__input"
+                   id="searchOverlayInput"
+                   name="pesquisa"
+                   type="text"
+                   placeholder="Search pieces..."
+                   aria-label="Search products" />
+            <button class="search-overlay__submit" type="submit">Search</button>
+        </form>
     </div>
 
     <!-- ═══ MAIN CONTENT ═══ -->
@@ -119,6 +184,17 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Customer Care column -->
+                <div>
+                    <div class="footer__heading">Customer Care</div>
+                    <div class="footer__links">
+                        <a class="footer__link" href="#">Sizing Guide</a>
+                        <a class="footer__link" href="#">Shipping &amp; Returns</a>
+                        <a class="footer__link" href="#">Care Instructions</a>
+                        <a class="footer__link" href="#">Privacy Policy</a>
+                    </div>
+                </div>
             </div>
 
             <!-- Bottom bar -->
@@ -137,13 +213,97 @@
             /* ── Mobile hamburger toggle ── */
             const hamburger = document.getElementById('hamburger');
             const mobileMenu = document.getElementById('mobileMenu');
+            const navbar = document.querySelector('.navbar');
+            const openSearch = document.getElementById('openSearch');
+            const closeSearch = document.getElementById('closeSearch');
+            const searchOverlay = document.getElementById('searchOverlay');
+            const searchOverlayInput = document.getElementById('searchOverlayInput');
+
+            function syncBodyScrollLock() {
+                const mobileOpen = mobileMenu && mobileMenu.classList.contains('is-open');
+                const searchOpen = searchOverlay && searchOverlay.classList.contains('is-open');
+                document.body.style.overflow = mobileOpen || searchOpen ? 'hidden' : '';
+            }
+
+            function setSearchOpen(isOpen) {
+                if (!searchOverlay) {
+                    return;
+                }
+
+                searchOverlay.classList.toggle('is-open', isOpen);
+                searchOverlay.setAttribute('aria-hidden', (!isOpen).toString());
+                if (openSearch) {
+                    openSearch.setAttribute('aria-expanded', isOpen.toString());
+                }
+                syncBodyScrollLock();
+
+                if (isOpen && searchOverlayInput) {
+                    window.setTimeout(function () {
+                        searchOverlayInput.focus();
+                    }, 80);
+                }
+            }
 
             if (hamburger && mobileMenu) {
                 hamburger.addEventListener('click', function () {
                     const isActive = hamburger.classList.toggle('is-active');
                     mobileMenu.classList.toggle('is-open');
                     hamburger.setAttribute('aria-expanded', isActive);
+                    syncBodyScrollLock();
                 });
+
+                mobileMenu.querySelectorAll('.mobile-menu__link').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        hamburger.classList.remove('is-active');
+                        hamburger.setAttribute('aria-expanded', 'false');
+                        mobileMenu.classList.remove('is-open');
+                        syncBodyScrollLock();
+                    });
+                });
+            }
+
+            if (openSearch && searchOverlay) {
+                openSearch.addEventListener('click', function () {
+                    setSearchOpen(true);
+                });
+            }
+
+            if (closeSearch && searchOverlay) {
+                closeSearch.addEventListener('click', function () {
+                    setSearchOpen(false);
+                });
+            }
+
+            if (searchOverlay) {
+                searchOverlay.addEventListener('click', function (event) {
+                    if (event.target === searchOverlay) {
+                        setSearchOpen(false);
+                    }
+                });
+            }
+
+            window.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    if (searchOverlay && searchOverlay.classList.contains('is-open')) {
+                        setSearchOpen(false);
+                    }
+
+                    if (hamburger && mobileMenu && mobileMenu.classList.contains('is-open')) {
+                        hamburger.classList.remove('is-active');
+                        hamburger.setAttribute('aria-expanded', 'false');
+                        mobileMenu.classList.remove('is-open');
+                        syncBodyScrollLock();
+                    }
+                }
+            });
+
+            if (navbar) {
+                function handleNavbarScroll() {
+                    navbar.classList.toggle('is-scrolled', window.scrollY > 50);
+                }
+
+                handleNavbarScroll();
+                window.addEventListener('scroll', handleNavbarScroll, { passive: true });
             }
 
             /* ── Scroll fade-in animation ── */

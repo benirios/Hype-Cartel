@@ -1,0 +1,6 @@
+[
+  {"id":"cat-clothing","name":"Clothing","description":"Apparel and streetwear"},
+  {"id":"cat-accessories","name":"Accessories","description":"Hats, jewelry, and more"},
+  {"id":"cat-electronics","name":"Electronics","description":"Gadgets and gear"},
+  {"id":"cat-home","name":"Home","description":"Home goods and decor"}
+]

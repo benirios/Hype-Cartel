@@ -1,0 +1,39 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="detail">
+    <div class="container container--narrow">
+        <div class="auth-card">
+            <h1 class="auth-card__title">Sign In</h1>
+            <p class="auth-card__subtitle">Access your account and continue your journey.</p>
+
+            <form method="post" asp-controller="Account" asp-action="Login" class="auth-form">
+                @Html.AntiForgeryToken()
+                <input asp-for="ReturnUrl" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="auth-form__error"></div>
+
+                <label class="auth-form__label" asp-for="Username">Username</label>
+                <input class="auth-form__input" asp-for="Username" autocomplete="username" />
+                <span class="auth-form__error" asp-validation-for="Username"></span>
+
+                <label class="auth-form__label" asp-for="Password">Password</label>
+                <input class="auth-form__input" asp-for="Password" autocomplete="current-password" />
+                <span class="auth-form__error" asp-validation-for="Password"></span>
+
+                <button class="btn-primary auth-form__submit" type="submit">Login</button>
+            </form>
+
+            <p class="auth-card__foot">
+                New here?
+                <a asp-controller="Account" asp-action="Register">Create account</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

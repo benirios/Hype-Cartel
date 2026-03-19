@@ -16,6 +16,11 @@
 
 <!-- ═══ CATALOG LAYOUT ═══ -->
 <section class="container">
+    <nav class="breadcrumb catalog-breadcrumb" aria-label="Breadcrumb">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span>Store</span>
+    </nav>
+
     <!-- Mobile filter toggle -->
     <button class="filters__mobile-toggle" id="filterToggle">Filter &amp; Sort</button>
 
@@ -72,6 +77,18 @@
             <div class="sorting-bar">
                 <span class="sorting-bar__count">@Model.Count @(Model.Count == 1 ? "Piece" : "Pieces")</span>
                 <div class="sorting-bar__right">
+                    @if (!string.IsNullOrEmpty(categoriaAtual))
+                    {
+                        <a class="sorting-bar__active-filter"
+                           asp-controller="Produtos"
+                           asp-action="Index"
+                           asp-route-pesquisa="@pesquisaAtual"
+                           asp-route-ordem="@ordemAtual">
+                            <span>Showing: @categoriaAtual</span>
+                            <span aria-hidden="true">×</span>
+                        </a>
+                    }
+
                     <form method="get" asp-controller="Produtos" asp-action="Index" id="searchForm">
                         @if (!string.IsNullOrEmpty(categoriaAtual))
                         {
@@ -145,9 +162,12 @@
                                      asp-append-version="true"
                                      alt="@produto.Nome"
                                      loading="lazy" />
-                                <div class="product-card__overlay">
-                                    <span class="btn-outline">Add to Cart</span>
-                                </div>
+                                <form class="product-card__overlay" method="post" action="/Carrinho/Adicionar">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="produtoId" value="@produto.Id" />
+                                    <input type="hidden" name="tamanho" value="@(produto.Tamanhos.FirstOrDefault() ?? "M")" />
+                                    <button class="btn-outline" type="submit">Add to Cart</button>
+                                </form>
                             </div>
                             <div class="product-card__info">
                                 <div class="product-card__name">@produto.Nome</div>

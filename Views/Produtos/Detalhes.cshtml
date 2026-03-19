@@ -7,9 +7,16 @@
 <!-- ═══ PRODUCT DETAIL ═══ -->
 <section class="detail">
     <div class="container">
+        <nav class="breadcrumb detail__breadcrumb" aria-label="Breadcrumb">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Produtos" asp-action="Index">Store</a>
+            <span>@Model.Categoria</span>
+            <span>@Model.Nome</span>
+        </nav>
+
         <div class="detail__grid">
             <!-- ── LEFT: Gallery ── -->
-            <div class="detail__gallery">
+            <div class="detail__gallery @(Model.ImagensAdicionais.Count == 0 ? "detail__gallery--single" : string.Empty)">
                 <div class="detail__main-image" id="mainImage">
                     <img src="~@Model.ImagemUrl"
                          asp-append-version="true"
@@ -59,8 +66,20 @@
                     </div>
                 }
 
-                <button class="btn-primary detail__add-cart" type="button">Add to Cart</button>
-                <button class="btn-ghost detail__wishlist" type="button">Save to Wishlist</button>
+                <form method="post"
+                      action="/Carrinho/Adicionar"
+                      id="detailAddToCartForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="produtoId" value="@Model.Id" />
+                    <input type="hidden" name="tamanho" id="detailSelectedSize" value="@(Model.Tamanhos.FirstOrDefault() ?? "M")" />
+                    <button class="btn-primary detail__add-cart" type="submit">Add to Cart</button>
+                </form>
+                <button class="btn-ghost detail__wishlist" id="wishlistToggle" type="button">
+                    <svg class="detail__wishlist-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 20.7l-1.45-1.32C5.4 14.73 2 11.67 2 8A4.99 4.99 0 017 3a5.5 5.5 0 015 2.35A5.5 5.5 0 0117 3a4.99 4.99 0 015 5c0 3.67-3.4 6.73-8.55 11.39z"></path>
+                    </svg>
+                    <span class="detail__wishlist-text">Save to Wishlist</span>
+                </button>
 
                 <p class="detail__shipping-note">Free shipping on orders over $200</p>
 
@@ -138,9 +157,12 @@
                                  asp-append-version="true"
                                  alt="@item.Nome"
                                  loading="lazy" />
-                            <div class="product-card__overlay">
-                                <span class="btn-outline">Add to Cart</span>
-                            </div>
+                            <form class="product-card__overlay" method="post" action="/Carrinho/Adicionar">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="produtoId" value="@item.Id" />
+                                <input type="hidden" name="tamanho" value="@(item.Tamanhos.FirstOrDefault() ?? "M")" />
+                                <button class="btn-outline" type="submit">Add to Cart</button>
+                            </form>
                         </div>
                         <div class="product-card__info">
                             <div class="product-card__name">@item.Nome</div>
@@ -160,12 +182,23 @@
             var sizeSelector = document.getElementById('sizeSelector');
             if (sizeSelector) {
                 var buttons = sizeSelector.querySelectorAll('.size-selector__btn');
+                var selectedSizeInput = document.getElementById('detailSelectedSize');
                 buttons.forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         buttons.forEach(function (b) { b.classList.remove('is-selected'); });
                         btn.classList.add('is-selected');
+                        if (selectedSizeInput) {
+                            selectedSizeInput.value = btn.getAttribute('data-size') || 'M';
+                        }
                     });
                 });
+
+                if (buttons.length > 0) {
+                    buttons[0].classList.add('is-selected');
+                    if (selectedSizeInput) {
+                        selectedSizeInput.value = buttons[0].getAttribute('data-size') || 'M';
+                    }
+                }
             }
 
             /* ── Thumbnail image switcher ── */
@@ -188,18 +221,24 @@
                 headers.forEach(function (header) {
                     header.addEventListener('click', function () {
                         var item = header.closest('.accordion__item');
-                        var isOpen = item.classList.contains('is-open');
-
-                        /* Close all */
-                        accordion.querySelectorAll('.accordion__item').forEach(function (el) {
-                            el.classList.remove('is-open');
-                        });
-
-                        /* Toggle clicked */
-                        if (!isOpen) {
-                            item.classList.add('is-open');
+                        if (!item) {
+                            return;
                         }
+
+                        item.classList.toggle('is-open');
                     });
+                });
+            }
+
+            /* ── Wishlist toggle ── */
+            var wishlistToggle = document.getElementById('wishlistToggle');
+            if (wishlistToggle) {
+                var wishlistText = wishlistToggle.querySelector('.detail__wishlist-text');
+                wishlistToggle.addEventListener('click', function () {
+                    var isWishlisted = wishlistToggle.classList.toggle('is-wishlisted');
+                    if (wishlistText) {
+                        wishlistText.textContent = isWishlisted ? 'Saved ♥' : 'Save to Wishlist';
+                    }
                 });
             }
         })();

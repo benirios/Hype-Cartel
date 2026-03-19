@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MafiaStore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94201fcc2a20108dd9c6ce6dbf1765ed2049fb69")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+abf1dec8bc642765743c0c7c75a2d2ed5cc339ec")]
 [assembly: System.Reflection.AssemblyProductAttribute("MafiaStore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MafiaStore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

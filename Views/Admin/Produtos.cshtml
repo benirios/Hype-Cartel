@@ -1,0 +1,116 @@
+@model List<ProdutoViewModel>
+@{
+    ViewData["Title"] = "Admin · Products";
+}
+
+<section class="catalog-hero">
+    <div class="container">
+        <h1 class="catalog-hero__title">ADMIN · PRODUCTS</h1>
+    </div>
+</section>
+
+<section class="container" style="padding-bottom: var(--space-xl);">
+    @if (TempData["AdminError"] is string adminError && !string.IsNullOrWhiteSpace(adminError))
+    {
+        <div class="auth-form__error" style="margin-bottom:1rem;">@adminError</div>
+    }
+
+    <div class="admin-panel">
+        <div class="admin-panel__section">
+            <h2 class="admin-panel__title">Create Product</h2>
+            <form method="post" asp-controller="Admin" asp-action="Criar" class="admin-form">
+                @Html.AntiForgeryToken()
+
+                <input class="auth-form__input" name="nome" placeholder="Name" required />
+                <input class="auth-form__input" name="preco" type="number" step="0.01" min="0" placeholder="Price" required />
+                <select class="auth-form__input" name="categoria" required>
+                    <option value="">Select category</option>
+                    <option value="Outerwear">Outerwear</option>
+                    <option value="Shirts">Shirts</option>
+                    <option value="Trousers">Trousers</option>
+                    <option value="Accessories">Accessories</option>
+                </select>
+                <input class="auth-form__input" name="imagemUrl" placeholder="Image URL (/catalog/...)" required />
+                <textarea class="auth-form__input" name="descricao" placeholder="Description" required></textarea>
+                <input class="auth-form__input" name="tamanhos" placeholder="Sizes comma separated (S,M,L)" />
+                <label class="filters__checkbox" style="margin: 0;">
+                    <input type="checkbox" name="destaque" value="true" />
+                    <span>Featured</span>
+                </label>
+                <button class="btn-primary" type="submit">Create</button>
+            </form>
+        </div>
+
+        <div class="admin-panel__section">
+            <h2 class="admin-panel__title">Manage Existing</h2>
+            <div class="admin-products">
+                @foreach (var produto in Model)
+                {
+                    <form method="post" asp-controller="Admin" asp-action="Editar" class="admin-product-card">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@produto.Id" />
+                        <div class="admin-product-card__head">
+                            <strong>#@produto.Id</strong>
+                            <button class="btn-ghost" type="submit">Save</button>
+                        </div>
+
+                        <input class="auth-form__input" name="nome" value="@produto.Nome" required />
+                        <input class="auth-form__input" name="preco" type="number" step="0.01" min="0" value="@produto.Preco" required />
+                        <select class="auth-form__input" name="categoria" required>
+                            @if (produto.Categoria == "Outerwear")
+                            {
+                                <option value="Outerwear" selected>Outerwear</option>
+                            }
+                            else
+                            {
+                                <option value="Outerwear">Outerwear</option>
+                            }
+                            @if (produto.Categoria == "Shirts")
+                            {
+                                <option value="Shirts" selected>Shirts</option>
+                            }
+                            else
+                            {
+                                <option value="Shirts">Shirts</option>
+                            }
+                            @if (produto.Categoria == "Trousers")
+                            {
+                                <option value="Trousers" selected>Trousers</option>
+                            }
+                            else
+                            {
+                                <option value="Trousers">Trousers</option>
+                            }
+                            @if (produto.Categoria == "Accessories")
+                            {
+                                <option value="Accessories" selected>Accessories</option>
+                            }
+                            else
+                            {
+                                <option value="Accessories">Accessories</option>
+                            }
+                        </select>
+                        <input class="auth-form__input" name="imagemUrl" value="@produto.ImagemUrl" required />
+                        <textarea class="auth-form__input" name="descricao" required>@produto.Descricao</textarea>
+                        <input class="auth-form__input" name="tamanhos" value="@string.Join(",", produto.Tamanhos)" />
+                        <label class="filters__checkbox" style="margin: 0;">
+                            <input type="checkbox" name="destaque" value="true" @(produto.Destaque ? "checked" : "") />
+                            <span>Featured</span>
+                        </label>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+        @foreach (var produto in Model)
+        {
+            <form method="post" asp-controller="Admin" asp-action="Remover" style="display:inline-block; margin:0 0.5rem 0.5rem 0;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@produto.Id" />
+                <button class="btn-outline" type="submit">Delete #@produto.Id</button>
+            </form>
+        }
+    </div>
+</section>

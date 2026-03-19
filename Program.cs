@@ -1,9 +1,32 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
+using MafiaStore.Filters;
+using MafiaStore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IProductCatalogService, ProductCatalogService>();
+builder.Services.AddSingleton<ICartStore, CartStore>();
+builder.Services.AddSingleton<IUserStore, UserStore>();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<CartCountActionFilter>();
+});
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "HypeCartel.Auth";
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(12);
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -23,6 +46,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

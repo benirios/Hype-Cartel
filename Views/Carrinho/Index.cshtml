@@ -20,7 +20,10 @@
             <div class="cart-items">
                 @foreach (var item in Model)
                 {
-                    <div class="cart-item">
+                    <div class="cart-item"
+                         data-produto-id="@item.Id"
+                         data-tamanho="@item.Tamanho"
+                         data-quantidade="@item.Quantidade">
                         <div class="cart-item__image">
                             <img src="~@item.ImagemUrl"
                                  asp-append-version="true"
@@ -31,9 +34,9 @@
                             <div class="cart-item__meta">Size: @item.Tamanho</div>
                         </div>
                         <div class="qty-stepper">
-                            <button class="qty-stepper__btn" type="button" aria-label="Decrease quantity">−</button>
+                            <button class="qty-stepper__btn qty-stepper__btn--decrease" type="button" aria-label="Decrease quantity">−</button>
                             <span class="qty-stepper__value">@item.Quantidade</span>
-                            <button class="qty-stepper__btn" type="button" aria-label="Increase quantity">+</button>
+                            <button class="qty-stepper__btn qty-stepper__btn--increase" type="button" aria-label="Increase quantity">+</button>
                         </div>
                         <div class="cart-item__price">$@item.Subtotal.ToString("0")</div>
                         <button class="cart-item__remove" type="button" aria-label="Remove item">✕</button>
@@ -47,6 +50,7 @@
 
             <!-- ── ORDER SUMMARY ── -->
             <div class="order-summary">
+                @Html.AntiForgeryToken()
                 <div class="order-summary__title">Order Summary</div>
 
                 <div class="order-summary__row">
@@ -63,13 +67,15 @@
                     <span class="order-summary__value">$@subtotal.ToString("0")</span>
                 </div>
 
-                <div class="order-summary__promo">
+                <form class="order-summary__promo" id="promoForm" action="#" method="post" novalidate>
                     <input class="order-summary__promo-input"
+                           id="promoInput"
                            type="text"
                            placeholder="Promo code"
                            aria-label="Promo code" />
-                    <button class="order-summary__promo-btn" type="button">Apply</button>
-                </div>
+                    <button class="order-summary__promo-btn" type="submit">Apply</button>
+                </form>
+                <p class="order-summary__promo-error" id="promoError" role="alert" aria-live="polite"></p>
 
                 <button class="btn-primary order-summary__checkout" type="button">Proceed to Checkout</button>
 
@@ -86,3 +92,131 @@
         </div>
     }
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            var antiForgeryInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            var antiForgeryToken = antiForgeryInput ? antiForgeryInput.value : '';
+
+            function postFormEncoded(url, payload) {
+                if (antiForgeryToken) {
+                    payload.__RequestVerificationToken = antiForgeryToken;
+                }
+
+                return fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    body: new URLSearchParams(payload).toString()
+                });
+            }
+
+            function parseItemData(itemEl) {
+                return {
+                    produtoId: itemEl.getAttribute('data-produto-id'),
+                    tamanho: itemEl.getAttribute('data-tamanho') || 'M',
+                    quantidade: parseInt(itemEl.getAttribute('data-quantidade') || '0', 10)
+                };
+            }
+
+            var cartItems = document.querySelectorAll('.cart-item');
+            cartItems.forEach(function (itemEl) {
+                var decreaseBtn = itemEl.querySelector('.qty-stepper__btn--decrease');
+                var increaseBtn = itemEl.querySelector('.qty-stepper__btn--increase');
+                var removeBtn = itemEl.querySelector('.cart-item__remove');
+
+                function requestQuantityChange(nextQuantity) {
+                    var data = parseItemData(itemEl);
+
+                    if (nextQuantity <= 0) {
+                        postFormEncoded('/Carrinho/Remover', {
+                            produtoId: data.produtoId,
+                            tamanho: data.tamanho
+                        }).then(function (res) {
+                            if (res.ok) {
+                                window.location.reload();
+                                return;
+                            }
+
+                            window.alert('Unable to remove item right now.');
+                        });
+                        return;
+                    }
+
+                    postFormEncoded('/Carrinho/AtualizarQuantidade', {
+                        produtoId: data.produtoId,
+                        tamanho: data.tamanho,
+                        quantidade: String(nextQuantity)
+                    }).then(function (res) {
+                        if (res.ok) {
+                            window.location.reload();
+                            return;
+                        }
+
+                        window.alert('Unable to update quantity right now.');
+                    });
+                }
+
+                if (decreaseBtn) {
+                    decreaseBtn.addEventListener('click', function () {
+                        var data = parseItemData(itemEl);
+                        requestQuantityChange(data.quantidade - 1);
+                    });
+                }
+
+                if (increaseBtn) {
+                    increaseBtn.addEventListener('click', function () {
+                        var data = parseItemData(itemEl);
+                        requestQuantityChange(data.quantidade + 1);
+                    });
+                }
+
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function () {
+                        var data = parseItemData(itemEl);
+                        postFormEncoded('/Carrinho/Remover', {
+                            produtoId: data.produtoId,
+                            tamanho: data.tamanho
+                        }).then(function (res) {
+                            if (res.ok) {
+                                window.location.reload();
+                                return;
+                            }
+
+                            window.alert('Unable to remove item right now.');
+                        });
+                    });
+                }
+            });
+
+            var promoForm = document.getElementById('promoForm');
+            var promoInput = document.getElementById('promoInput');
+            var promoError = document.getElementById('promoError');
+
+            if (promoForm && promoInput && promoError) {
+                promoForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    var normalizedCode = promoInput.value.trim().toUpperCase();
+                    var isValid = normalizedCode === 'HYPE10' || normalizedCode === 'CARTEL';
+
+                    if (!isValid) {
+                        promoInput.classList.add('is-invalid');
+                        promoError.textContent = 'Invalid code';
+                        return;
+                    }
+
+                    promoInput.classList.remove('is-invalid');
+                    promoError.textContent = '';
+                });
+
+                promoInput.addEventListener('input', function () {
+                    promoInput.classList.remove('is-invalid');
+                    promoError.textContent = '';
+                });
+            }
+        })();
+    </script>
+}
