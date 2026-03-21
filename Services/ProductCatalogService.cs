@@ -337,11 +337,9 @@ public sealed class ProductCatalogService : IProductCatalogService
     {
         return categoryId?.Trim().ToLowerInvariant() switch
         {
-            "cat-clothing" => "Shirts",
+            "cat-clothing" => "Clothing",
             "cat-accessories" => "Accessories",
-            "cat-electronics" => "Outerwear",
-            "cat-home" => "Trousers",
-            _ => string.IsNullOrWhiteSpace(categoryId) ? "Shirts" : categoryId
+            _ => string.IsNullOrWhiteSpace(categoryId) ? "Clothing" : categoryId
         };
     }
 
@@ -349,10 +347,8 @@ public sealed class ProductCatalogService : IProductCatalogService
     {
         return categoryName.Trim().ToLowerInvariant() switch
         {
-            "shirts" => "cat-clothing",
+            "clothing" => "cat-clothing",
             "accessories" => "cat-accessories",
-            "outerwear" => "cat-electronics",
-            "trousers" => "cat-home",
             _ => "cat-clothing"
         };
     }

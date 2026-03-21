@@ -1,14 +1,23 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MafiaStore.Models;
+using MafiaStore.Services;
 
 namespace MafiaStore.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly IProductCatalogService _catalog;
+
+    public HomeController(IProductCatalogService catalog)
+    {
+        _catalog = catalog;
+    }
+
     public IActionResult Index()
     {
-        return View();
+        var highlights = _catalog.GetAll().Where(p => p.Destaque).ToList();
+        return View(highlights);
     }
 
     public IActionResult Privacy()

@@ -44,6 +44,8 @@ public class ProdutosController : Controller
         ViewBag.CategoriaAtual = categoria;
         ViewBag.PesquisaAtual = pesquisa;
         ViewBag.OrdemAtual = ordem;
+        // Dynamically get categories directly from the products
+        ViewBag.Categorias = _productCatalog.GetAll().Select(p => p.Categoria).Distinct().ToList();
 
         return View(produtos);
     }

@@ -4,7 +4,7 @@
     var categoriaAtual = ViewBag.CategoriaAtual as string;
     var pesquisaAtual = ViewBag.PesquisaAtual as string;
     var ordemAtual = ViewBag.OrdemAtual as string;
-    var categorias = new[] { "Outerwear", "Shirts", "Trousers", "Accessories" };
+    var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
 }
 
 <!-- ═══ CATALOG HERO ═══ -->

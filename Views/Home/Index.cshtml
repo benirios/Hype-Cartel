@@ -1,19 +1,7 @@
+@model IEnumerable<MafiaStore.Models.ViewModels.ProdutoViewModel>
 @{
     ViewData["Title"] = "Home";
-
-    var featuredPieces = new[]
-    {
-        new { Id = 1, Nome = "Shadow Overcoat", Preco = 349, Imagem = "~/catalog/shadow-overcoat.svg" },
-        new { Id = 2, Nome = "Phantom Bomber", Preco = 289, Imagem = "~/catalog/phantom-bomber.svg" },
-        new { Id = 5, Nome = "Silk Noir Shirt", Preco = 189, Imagem = "~/catalog/silk-noir-shirt.svg" },
-        new { Id = 11, Nome = "Gold Signet Ring", Preco = 129, Imagem = "~/catalog/gold-signet-ring.svg" },
-        new { Id = 3, Nome = "Noir Trench", Preco = 389, Imagem = "~/catalog/noir-trench.svg" },
-        new { Id = 6, Nome = "Ghost Linen Tee", Preco = 89, Imagem = "~/catalog/ghost-linen-tee.svg" },
-        new { Id = 9, Nome = "Eclipse Trousers", Preco = 179, Imagem = "~/catalog/eclipse-trousers.svg" },
-        new { Id = 12, Nome = "Onyx Chain", Preco = 159, Imagem = "~/catalog/onyx-chain.svg" }
-    };
 }
-
 <!-- ═══ HERO SECTION ═══ -->
 <section class="hero" style="margin-top: calc(var(--navbar-height) * -1);">
     <video class="hero__video" autoplay muted loop playsinline>
@@ -40,7 +28,7 @@
         </div>
 
         <div class="product-grid">
-            @foreach (var piece in featuredPieces)
+            @foreach (var piece in Model)
             {
                 <div class="product-card animate">
                     <div class="product-card__image-wrap">
@@ -48,12 +36,12 @@
                            asp-action="Detalhes"
                            asp-route-id="@piece.Id"
                            aria-label="View @piece.Nome details">
-                            <img src="@piece.Imagem" asp-append-version="true" alt="@piece.Nome" loading="lazy" />
+                            <img src="@piece.ImagemUrl" asp-append-version="true" alt="@piece.Nome" loading="lazy" />
                         </a>
                         <form class="product-card__overlay" method="post" action="/Carrinho/Adicionar">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="produtoId" value="@piece.Id" />
-                            <input type="hidden" name="tamanho" value="M" />
+                            <input type="hidden" name="tamanho" value="@(piece.Tamanhos.FirstOrDefault() ?? "Unico")" />
                             <button class="btn-outline" type="submit">Add to Cart</button>
                         </form>
                     </div>
@@ -62,7 +50,7 @@
                        asp-action="Detalhes"
                        asp-route-id="@piece.Id">
                         <div class="product-card__name">@piece.Nome</div>
-                        <div class="product-card__price">$@piece.Preco</div>
+                        <div class="product-card__price">@piece.Preco.ToString("C")</div>
                     </a>
                 </div>
             }
