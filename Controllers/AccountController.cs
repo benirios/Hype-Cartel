@@ -1,19 +1,20 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MafiaStore.Models.ViewModels;
-using MafiaStore.Services;
 
 namespace MafiaStore.Controllers;
 
 public class AccountController : Controller
 {
-    private readonly IUserStore _userStore;
+    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public AccountController(IUserStore userStore)
+    public AccountController(
+        SignInManager<IdentityUser> signInManager,
+        UserManager<IdentityUser> userManager)
     {
-        _userStore = userStore;
+        _signInManager = signInManager;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -36,21 +37,25 @@ public class AccountController : Controller
             return View(model);
         }
 
-        var user = _userStore.Authenticate(model.Username, model.Password);
-        if (user is null)
+        var result = await _signInManager.PasswordSignInAsync(
+            model.Username,
+            model.Password,
+            isPersistent: false,
+            lockoutOnFailure: false);
+        if (!result.Succeeded)
         {
             ModelState.AddModelError(string.Empty, "Invalid username or password.");
             return View(model);
         }
-
-        await SignInUserAsync(user.Username, user.Role);
 
         if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
         {
             return Redirect(model.ReturnUrl);
         }
 
-        return user.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase)
+        var user = await _userManager.FindByNameAsync(model.Username);
+        var isAdmin = user is not null && await _userManager.IsInRoleAsync(user, "Admin");
+        return isAdmin
             ? RedirectToAction("Produtos", "Admin")
             : RedirectToAction("Index", "Home");
     }
@@ -68,15 +73,32 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Register(RegisterViewModel model)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        if (!_userStore.CreateUser(model.Username, model.Email, model.Password, "Customer", out var error))
+        var user = new IdentityUser
         {
+            UserName = model.Username.Trim(),
+            Email = model.Email.Trim(),
+            EmailConfirmed = true
+        };
+
+        var createResult = await _userManager.CreateAsync(user, model.Password);
+        if (!createResult.Succeeded)
+        {
+            var error = string.Join("; ", createResult.Errors.Select(e => e.Description));
+            ModelState.AddModelError(string.Empty, error);
+            return View(model);
+        }
+
+        var addRoleResult = await _userManager.AddToRoleAsync(user, "Customer");
+        if (!addRoleResult.Succeeded)
+        {
+            var error = string.Join("; ", addRoleResult.Errors.Select(e => e.Description));
             ModelState.AddModelError(string.Empty, error);
             return View(model);
         }
@@ -88,28 +110,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
-    }
-
-    private async Task SignInUserAsync(string username, string role)
-    {
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.Name, username),
-            new(ClaimTypes.Role, role)
-        };
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-
-        await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            principal,
-            new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(12)
-            });
     }
 }

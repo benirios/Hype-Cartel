@@ -1,34 +1,80 @@
 const heroVideo = document.getElementById("heroVideo");
 
 if (heroVideo) {
-  const freezeAt = (timeInSeconds) => {
-    heroVideo.pause();
-    heroVideo.currentTime = timeInSeconds;
-  };
+  const storageKey = "heroIntroSoundPlayed";
+  const hasPlayedIntro = localStorage.getItem(storageKey) === "1";
 
-  const startPlayback = () => {
-    const midpoint = Math.max(heroVideo.duration / 2, 0.1);
+  const startMutedLoop = () => {
+    // Ensure we loop silently from the start of the video
+    heroVideo.loop = true;
+    heroVideo.muted = true;
+    heroVideo.defaultMuted = true;
+    try {
+      heroVideo.currentTime = 0;
+    } catch (e) {
+      // Some browsers may throw when modifying currentTime before metadata is loaded
+    }
 
-    const stopAtMidpoint = () => {
-      if (heroVideo.currentTime >= midpoint) {
-        freezeAt(midpoint);
-        heroVideo.removeEventListener("timeupdate", stopAtMidpoint);
-      }
-    };
-
-    heroVideo.currentTime = 0;
-    heroVideo.addEventListener("timeupdate", stopAtMidpoint);
-
-    heroVideo.play().catch((error) => {
-      console.error("Could not autoplay hero video:", error);
-      freezeAt(midpoint);
-      heroVideo.removeEventListener("timeupdate", stopAtMidpoint);
+    heroVideo.play().catch(() => {
+      /* ignore autoplay rejection */
     });
   };
 
-  if (heroVideo.readyState >= 1) {
-    startPlayback();
+  const markIntroPlayed = () => {
+    localStorage.setItem(storageKey, "1");
+  };
+
+  const onIntroEnded = () => {
+    // Remove the ended handler and switch to a muted looping playback
+    heroVideo.removeEventListener('ended', onIntroEnded);
+    startMutedLoop();
+  };
+
+  const startIntroWithSound = async () => {
+    heroVideo.loop = false;
+    heroVideo.currentTime = 0;
+    heroVideo.muted = false;
+    heroVideo.defaultMuted = false;
+    heroVideo.volume = 1;
+
+    await heroVideo.play();
+    markIntroPlayed();
+  };
+
+  const waitForUserGestureToStartSound = () => {
+    const onUserGesture = async () => {
+      document.removeEventListener("pointerdown", onUserGesture);
+      document.removeEventListener("keydown", onUserGesture);
+
+      try {
+        await startIntroWithSound();
+      } catch {
+        startMutedLoop();
+      }
+    };
+
+    document.addEventListener("pointerdown", onUserGesture, { once: true });
+    document.addEventListener("keydown", onUserGesture, { once: true });
+  };
+
+  heroVideo.addEventListener("ended", onIntroEnded);
+
+  const isLocalhost = ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+
+  if (isLocalhost) {
+    // For localhost, always attempt the sound intro on each navigation
+    startIntroWithSound().catch(() => {
+      startMutedLoop();
+      waitForUserGestureToStartSound();
+    });
   } else {
-    heroVideo.addEventListener("loadedmetadata", startPlayback, { once: true });
+    if (hasPlayedIntro) {
+      startMutedLoop();
+    } else {
+      startIntroWithSound().catch(() => {
+        startMutedLoop();
+        waitForUserGestureToStartSound();
+      });
+    }
   }
 }

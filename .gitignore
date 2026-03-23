@@ -1,0 +1,13 @@
+# Build outputs
+/bin/
+/obj/
+/bin/
+*.db
+*.db-shm
+*.db-wal
+# IDE
+.vs/
+.DS_Store
+/.dotnet-tools/
+# user secrets
+*.user

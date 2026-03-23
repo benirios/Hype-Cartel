@@ -1,0 +1,453 @@
+[
+  {
+    "Id": "1",
+    "Name": "Tennis Necklace",
+    "Sku": "HYPE-001",
+    "Price": 300,
+    "Currency": "USD",
+    "Description": "Classic and timeless, tennis mesh in fine silver.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/tennis-necklace/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "tennis-necklace",
+    "Highlight": true
+  },
+  {
+    "Id": "2",
+    "Name": "Iced Out Chain 13mm",
+    "Sku": "HYPE-002",
+    "Price": 350,
+    "Currency": "USD",
+    "Description": "Chain encrusted with sparkling crystals.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/iced-out-chain-13mm/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "iced-out-chain-13mm",
+    "Highlight": false
+  },
+  {
+    "Id": "3",
+    "Name": "Silver Mafia Watch",
+    "Sku": "HYPE-003",
+    "Price": 750,
+    "Currency": "USD",
+    "Description": "316L Stainless steel, excellence in durability.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/silver-mafia-watch/image-1.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "silver-mafia-watch",
+    "Highlight": false
+  },
+  {
+    "Id": "4",
+    "Name": "Royal Oak Iced",
+    "Sku": "HYPE-004",
+    "Price": 1500,
+    "Currency": "USD",
+    "Description": "Fully encrusted, unquestionable presence.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/royal-oak-iced/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "royal-oak-iced",
+    "Highlight": false
+  },
+  {
+    "Id": "5",
+    "Name": "Boss Skeleton Watch",
+    "Sku": "HYPE-005",
+    "Price": 1200,
+    "Currency": "USD",
+    "Description": "Exposed mechanism with premium finish.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/boss-skeleton-watch/image-1.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "boss-skeleton-watch",
+    "Highlight": true
+  },
+  {
+    "Id": "6",
+    "Name": "Onyx Automatic Watch",
+    "Sku": "HYPE-006",
+    "Price": 990,
+    "Currency": "USD",
+    "Description": "Luxury standard with precision crown.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/onyx-automatic-watch/image-1.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "onyx-automatic-watch",
+    "Highlight": false
+  },
+  {
+    "Id": "7",
+    "Name": "Classic Patek",
+    "Sku": "HYPE-007",
+    "Price": 890,
+    "Currency": "USD",
+    "Description": "Minimalist and sophisticated for any event.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/classic-patek/image-1.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "classic-patek",
+    "Highlight": false
+  },
+  {
+    "Id": "8",
+    "Name": "Tennis Bracelet",
+    "Sku": "HYPE-008",
+    "Price": 190,
+    "Currency": "USD",
+    "Description": "Perfect match for the tennis necklace lineage.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/tennis-bracelet/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "tennis-bracelet",
+    "Highlight": true
+  },
+  {
+    "Id": "9",
+    "Name": "Cuban Link Iced Bracelet",
+    "Sku": "HYPE-009",
+    "Price": 210,
+    "Currency": "USD",
+    "Description": "High jewelry cuban bracelet, fully iced.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/cuban-link-iced-bracelet/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "cuban-link-iced-bracelet",
+    "Highlight": false
+  },
+  {
+    "Id": "10",
+    "Name": "Hollow Out Grillz",
+    "Sku": "HYPE-010",
+    "Price": 290,
+    "Currency": "USD",
+    "Description": "Hollowed out design for subtle style.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/hollow-out-grillz/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "hollow-out-grillz",
+    "Highlight": false
+  },
+  {
+    "Id": "11",
+    "Name": "VVS Diamond Grillz",
+    "Sku": "HYPE-011",
+    "Price": 450,
+    "Currency": "USD",
+    "Description": "Custom grillz with 5A micro-zirconia.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/vvs-diamond-grillz/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "vvs-diamond-grillz",
+    "Highlight": false
+  },
+  {
+    "Id": "12",
+    "Name": "Gold Fangs Grillz",
+    "Sku": "HYPE-012",
+    "Price": 380,
+    "Currency": "USD",
+    "Description": "Canine edition with 24k gold bath.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/gold-fangs-grillz/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "gold-fangs-grillz",
+    "Highlight": false
+  },
+  {
+    "Id": "13",
+    "Name": "Mafia Signet Ring",
+    "Sku": "HYPE-013",
+    "Price": 150,
+    "Currency": "USD",
+    "Description": "Signet ring with white gold setting.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/mafia-signet-ring/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "mafia-signet-ring",
+    "Highlight": false
+  },
+  {
+    "Id": "14",
+    "Name": "Royal Solitaire Ring",
+    "Sku": "HYPE-014",
+    "Price": 120,
+    "Currency": "USD",
+    "Description": "925 Silver ring with cubic zirconia.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/royal-solitaire-ring/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "royal-solitaire-ring",
+    "Highlight": false
+  },
+  {
+    "Id": "15",
+    "Name": "Cuban Link Ring",
+    "Sku": "HYPE-015",
+    "Price": 180,
+    "Currency": "USD",
+    "Description": "Cuban link style ring, 18k gold plated.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/cuban-link-ring/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "cuban-link-ring",
+    "Highlight": true
+  },
+  {
+    "Id": "16",
+    "Name": "Baguette Cut Ring",
+    "Sku": "HYPE-016",
+    "Price": 200,
+    "Currency": "USD",
+    "Description": "Bold design with baguette stones.",
+    "CategoryId": "cat-accessories",
+    "Images": [
+      "/catalog/baguette-cut-ring/image-1.png"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "One Size"
+    ],
+    "Slug": "baguette-cut-ring",
+    "Highlight": false
+  },
+  {
+    "Id": "17",
+    "Name": "Shine Oxford Shoes",
+    "Sku": "HYPE-017",
+    "Price": 260,
+    "Currency": "USD",
+    "Description": "Glossy finish for exclusive events.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/shine-oxford-shoes/image-1.jpg",
+      "/catalog/shine-oxford-shoes/image-2.jpg",
+      "/catalog/shine-oxford-shoes/image-3.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "shine-oxford-shoes",
+    "Highlight": false
+  },
+  {
+    "Id": "18",
+    "Name": "Black Leather Moccasins",
+    "Sku": "HYPE-018",
+    "Price": 240,
+    "Currency": "USD",
+    "Description": "Flap shoes, genuine calf leather.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/black-leather-moccasins/image-1.jpg",
+      "/catalog/black-leather-moccasins/image-2.jpg",
+      "/catalog/black-leather-moccasins/image-3.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "black-leather-moccasins",
+    "Highlight": false
+  },
+  {
+    "Id": "19",
+    "Name": "Hype Zip Polo",
+    "Sku": "HYPE-019",
+    "Price": 130,
+    "Currency": "USD",
+    "Description": "Front zip with premium neck detail.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/hype-zip-polo/image-1.jpg",
+      "/catalog/hype-zip-polo/image-2.jpg",
+      "/catalog/hype-zip-polo/image-3.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "hype-zip-polo",
+    "Highlight": false
+  },
+  {
+    "Id": "20",
+    "Name": "Vintage Knitted Polo",
+    "Sku": "HYPE-020",
+    "Price": 110,
+    "Currency": "USD",
+    "Description": "Worked knit, classic buttoned polo.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/vintage-knitted-polo/image-1.jpg",
+      "/catalog/vintage-knitted-polo/image-2.jpg",
+      "/catalog/vintage-knitted-polo/image-3.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "vintage-knitted-polo",
+    "Highlight": false
+  },
+  {
+    "Id": "21",
+    "Name": "Boss Pinstripe Suit",
+    "Sku": "HYPE-021",
+    "Price": 650,
+    "Currency": "USD",
+    "Description": "Timeless pinstripe pattern, straight cut.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/boss-pinstripe-suit/image-1.jpg",
+      "/catalog/boss-pinstripe-suit/image-2.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "boss-pinstripe-suit",
+    "Highlight": false
+  },
+  {
+    "Id": "22",
+    "Name": "Slim Fit Suit",
+    "Sku": "HYPE-022",
+    "Price": 600,
+    "Currency": "USD",
+    "Description": "Italian ensemble signed by premium tailors.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/slim-fit-suit/image-1.jpg",
+      "/catalog/slim-fit-suit/image-2.jpg",
+      "/catalog/slim-fit-suit/image-3.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "slim-fit-suit",
+    "Highlight": false
+  },
+  {
+    "Id": "23",
+    "Name": "Over-the-Top Velvet Blazer",
+    "Sku": "HYPE-023",
+    "Price": 350,
+    "Currency": "USD",
+    "Description": "Textured corduroy velvet, modern fit.",
+    "CategoryId": "cat-clothing",
+    "Images": [
+      "/catalog/over-the-top-velvet-blazer/image-1.jpg",
+      "/catalog/over-the-top-velvet-blazer/image-2.jpg",
+      "/catalog/over-the-top-velvet-blazer/image-3.jpg",
+      "/catalog/over-the-top-velvet-blazer/image-4.jpg",
+      "/catalog/over-the-top-velvet-blazer/image-5.jpg",
+      "/catalog/over-the-top-velvet-blazer/image-6.jpg"
+    ],
+    "Stock": 10,
+    "Sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "Slug": "over-the-top-velvet-blazer",
+    "Highlight": false
+  }
+]

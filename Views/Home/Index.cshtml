@@ -4,7 +4,7 @@
 }
 <!-- ═══ HERO SECTION ═══ -->
 <section class="hero" style="margin-top: calc(var(--navbar-height) * -1);">
-    <video class="hero__video" autoplay muted loop playsinline>
+    <video id="heroVideo" class="hero__video" playsinline preload="auto">
         <source src="/Assets/background.mp4" type="video/mp4" />
     </video>
     <div class="hero__overlay"></div>
@@ -18,6 +18,10 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/home.js" asp-append-version="true"></script>
+}
 
 <!-- ═══ FEATURED PIECES ═══ -->
 <section class="featured" id="featured">
@@ -62,27 +66,6 @@
     </div>
 </section>
 
-<!-- ═══ BRAND MANIFESTO ═══ -->
-<section class="manifesto">
-    <div class="container">
-        <div class="manifesto__grid">
-            <div class="manifesto__text animate">
-                <span class="section-label">The House</span>
-                <h2 class="section-title">Our Manifesto</h2>
-                <p class="manifesto__quote">
-                    We don't follow seasons. We follow shadows. Every thread carries the weight of intention, every silhouette drawn from the architecture of the night.
-                </p>
-                <p class="manifesto__body">
-                    Hype Cartel exists at the intersection of darkness and refinement. Our garments are not worn — they are inhabited. Built for those who understand that true power is silent, and that style is the first language of respect.
-                </p>
-                <a class="btn-outline" asp-controller="Produtos" asp-action="Index">Explore the Collection</a>
-            </div>
-            <div class="manifesto__image animate">
-                <img src="~/catalog/manifesto-editorial.svg" asp-append-version="true" alt="Hype Cartel editorial" loading="lazy" />
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- ═══ CATEGORIES ═══ -->
 <section class="categories">

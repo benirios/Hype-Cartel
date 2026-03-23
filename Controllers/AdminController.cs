@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MafiaStore.Data;
+using MafiaStore.Models;
 using MafiaStore.Models.ViewModels;
 using MafiaStore.Services;
 
@@ -9,10 +11,12 @@ namespace MafiaStore.Controllers;
 public class AdminController : Controller
 {
     private readonly IProductCatalogService _productCatalog;
+    private readonly ApplicationDbContext _db;
 
-    public AdminController(IProductCatalogService productCatalog)
+    public AdminController(IProductCatalogService productCatalog, ApplicationDbContext db)
     {
         _productCatalog = productCatalog;
+        _db = db;
     }
 
     [HttpGet]
@@ -22,6 +26,11 @@ public class AdminController : Controller
             .GetAll()
             .OrderBy(p => p.Id)
             .ToList();
+        var categorias = _db.Categories
+            .OrderBy(c => c.Name)
+            .ToList();
+
+        ViewBag.Categorias = categorias;
 
         return View(produtos);
     }
@@ -104,6 +113,89 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Produtos));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CriarCategoria(string nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+        {
+            TempData["AdminError"] = "Category name is required.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        var trimmed = nome.Trim();
+        var normalized = trimmed.ToLowerInvariant();
+        if (_db.Categories.Any(c => c.Name.ToLower() == normalized))
+        {
+            TempData["AdminError"] = "Category already exists.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        _db.Categories.Add(new Category
+        {
+            Name = trimmed,
+            Slug = Slugify(trimmed)
+        });
+        _db.SaveChanges();
+
+        return RedirectToAction(nameof(Produtos));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditarCategoria(int id, string nome)
+    {
+        var category = _db.Categories.FirstOrDefault(c => c.Id == id);
+        if (category is null)
+        {
+            TempData["AdminError"] = "Category not found.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        if (string.IsNullOrWhiteSpace(nome))
+        {
+            TempData["AdminError"] = "Category name is required.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        var trimmed = nome.Trim();
+        var normalized = trimmed.ToLowerInvariant();
+        if (_db.Categories.Any(c => c.Id != id && c.Name.ToLower() == normalized))
+        {
+            TempData["AdminError"] = "Another category already uses this name.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        category.Name = trimmed;
+        category.Slug = Slugify(trimmed);
+        _db.SaveChanges();
+
+        return RedirectToAction(nameof(Produtos));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult RemoverCategoria(int id)
+    {
+        var category = _db.Categories.FirstOrDefault(c => c.Id == id);
+        if (category is null)
+        {
+            TempData["AdminError"] = "Category not found.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        var hasProducts = _db.Products.Any(p => p.CategoryId == id);
+        if (hasProducts)
+        {
+            TempData["AdminError"] = "Cannot delete a category with products.";
+            return RedirectToAction(nameof(Produtos));
+        }
+
+        _db.Categories.Remove(category);
+        _db.SaveChanges();
+        return RedirectToAction(nameof(Produtos));
+    }
+
     private static List<string> ParseSizes(string? sizes)
     {
         if (string.IsNullOrWhiteSpace(sizes))
@@ -117,5 +209,22 @@ public class AdminController : Controller
             .Select(size => size.ToUpperInvariant())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
+    }
+
+    private static string Slugify(string value)
+    {
+        var chars = value
+            .Trim()
+            .ToLowerInvariant()
+            .Select(c => char.IsLetterOrDigit(c) ? c : '-')
+            .ToArray();
+
+        var slug = new string(chars);
+        while (slug.Contains("--", StringComparison.Ordinal))
+        {
+            slug = slug.Replace("--", "-", StringComparison.Ordinal);
+        }
+
+        return slug.Trim('-');
     }
 }

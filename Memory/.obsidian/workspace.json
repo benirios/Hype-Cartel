@@ -1,0 +1,230 @@
+{
+  "main": {
+    "id": "b23570f326f25c7f",
+    "type": "split",
+    "children": [
+      {
+        "id": "a6d6d2dc9b552edf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9ecc003ded8fcdaf",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Context.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Context"
+            }
+          }
+        ]
+      },
+      {
+        "id": "74daac3450bc9a73",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "113c62e9a26d0699",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "full_history.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "full_history"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "49cd61e1fe96d799",
+    "type": "split",
+    "children": [
+      {
+        "id": "db9a432dc19fb3d8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a1ef8a14438f879e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "c982af04de00c1f7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "27146fd08eef42aa",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 248.5
+  },
+  "right": {
+    "id": "73d3a0dfb8df67e0",
+    "type": "split",
+    "children": [
+      {
+        "id": "ac0f3915f480ce6a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "18926c47fb0221ec",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "full_history.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for full_history"
+            }
+          },
+          {
+            "id": "dff128deb040ef63",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "full_history.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from full_history"
+            }
+          },
+          {
+            "id": "7b87fb66e35471cb",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "56c3dca40749c8fb",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "4d9abdc38d50e586",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "full_history.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of full_history"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "113c62e9a26d0699",
+  "lastOpenFiles": [
+    "Context.md",
+    "full_history.md",
+    "resume_instructions.md",
+    "memory_index.md",
+    "context/ref-LiquidNavBar.png",
+    "context/ref-LiquidShopNow.png",
+    "context/users.json",
+    "context/ref1.png",
+    "context",
+    "steps.md",
+    "pdfs.md",
+    "points.md",
+    "README.md",
+    "PROJECT_CONTEXT.md",
+    "Files/UFCD10792-TFinal-Enunciado_Oficial_Loja_Online.pdf",
+    "Files/UFCD10792-TFinal-Requisitos_Tecnicos_Loja_Online.pdf",
+    "Files/UFCD10792-TFinal-Rubrica_Avaliacao_Quantitativa_Loja_Online.pdf",
+    "Files/UFCD10792-FP1-FichaPrática-Aula1-ASP.NET_Core_MVC.pdf",
+    "Files/UFCD10792-FP2-Ficha_Prática-Aula2-ModelBinding.pdf",
+    "Files/UFCD10792-FP3-Ficha_Prática-Aula3-ExemploComBaseDados.pdf",
+    "Files"
+  ]
+}
