@@ -14,6 +14,9 @@
     {
         <div class="auth-form__error" style="margin-bottom:1rem;">@adminError</div>
     }
+    @{
+        var categorias = ViewBag.Categorias as List<Category> ?? new List<Category>();
+    }
 
     <div class="admin-panel">
         <div class="admin-panel__section">
@@ -25,10 +28,10 @@
                 <input class="auth-form__input" name="preco" type="number" step="0.01" min="0" placeholder="Price" required />
                 <select class="auth-form__input" name="categoria" required>
                     <option value="">Select category</option>
-                    <option value="Outerwear">Outerwear</option>
-                    <option value="Shirts">Shirts</option>
-                    <option value="Trousers">Trousers</option>
-                    <option value="Accessories">Accessories</option>
+                    @foreach (var categoria in categorias)
+                    {
+                        <option value="@categoria.Name">@categoria.Name</option>
+                    }
                 </select>
                 <input class="auth-form__input" name="imagemUrl" placeholder="Image URL (/catalog/...)" required />
                 <textarea class="auth-form__input" name="descricao" placeholder="Description" required></textarea>
@@ -39,6 +42,32 @@
                 </label>
                 <button class="btn-primary" type="submit">Create</button>
             </form>
+        </div>
+
+        <div class="admin-panel__section">
+            <h2 class="admin-panel__title">Manage Categories</h2>
+            <form method="post" asp-controller="Admin" asp-action="CriarCategoria" class="admin-form" style="margin-bottom:1rem;">
+                @Html.AntiForgeryToken()
+                <input class="auth-form__input" name="nome" placeholder="Category name" required />
+                <button class="btn-primary" type="submit">Create Category</button>
+            </form>
+
+            @foreach (var categoria in categorias)
+            {
+                <div class="admin-product-card">
+                    <form method="post" asp-controller="Admin" asp-action="EditarCategoria" class="admin-form" style="margin-bottom:0.5rem;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@categoria.Id" />
+                        <input class="auth-form__input" name="nome" value="@categoria.Name" required />
+                        <button class="btn-ghost" type="submit">Save</button>
+                    </form>
+                    <form method="post" asp-controller="Admin" asp-action="RemoverCategoria">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@categoria.Id" />
+                        <button class="btn-outline" type="submit">Delete</button>
+                    </form>
+                </div>
+            }
         </div>
 
         <div class="admin-panel__section">
@@ -57,37 +86,16 @@
                         <input class="auth-form__input" name="nome" value="@produto.Nome" required />
                         <input class="auth-form__input" name="preco" type="number" step="0.01" min="0" value="@produto.Preco" required />
                         <select class="auth-form__input" name="categoria" required>
-                            @if (produto.Categoria == "Outerwear")
+                            @foreach (var categoria in categorias)
                             {
-                                <option value="Outerwear" selected>Outerwear</option>
-                            }
-                            else
-                            {
-                                <option value="Outerwear">Outerwear</option>
-                            }
-                            @if (produto.Categoria == "Shirts")
-                            {
-                                <option value="Shirts" selected>Shirts</option>
-                            }
-                            else
-                            {
-                                <option value="Shirts">Shirts</option>
-                            }
-                            @if (produto.Categoria == "Trousers")
-                            {
-                                <option value="Trousers" selected>Trousers</option>
-                            }
-                            else
-                            {
-                                <option value="Trousers">Trousers</option>
-                            }
-                            @if (produto.Categoria == "Accessories")
-                            {
-                                <option value="Accessories" selected>Accessories</option>
-                            }
-                            else
-                            {
-                                <option value="Accessories">Accessories</option>
+                                if (string.Equals(produto.Categoria, categoria.Name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <option value="@categoria.Name" selected>@categoria.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@categoria.Name">@categoria.Name</option>
+                                }
                             }
                         </select>
                         <input class="auth-form__input" name="imagemUrl" value="@produto.ImagemUrl" required />

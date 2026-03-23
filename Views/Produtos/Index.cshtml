@@ -5,6 +5,9 @@
     var pesquisaAtual = ViewBag.PesquisaAtual as string;
     var ordemAtual = ViewBag.OrdemAtual as string;
     var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
+    var paginaAtual = ViewBag.PaginaAtual is int p ? p : 1;
+    var totalPaginas = ViewBag.TotalPaginas is int tp ? tp : 1;
+    var totalItems = ViewBag.TotalItems is int ti ? ti : Model.Count;
 }
 
 <!-- ═══ CATALOG HERO ═══ -->
@@ -75,7 +78,7 @@
         <div>
             <!-- Sorting bar -->
             <div class="sorting-bar">
-                <span class="sorting-bar__count">@Model.Count @(Model.Count == 1 ? "Piece" : "Pieces")</span>
+                <span class="sorting-bar__count">@totalItems @(totalItems == 1 ? "Piece" : "Pieces")</span>
                 <div class="sorting-bar__right">
                     @if (!string.IsNullOrEmpty(categoriaAtual))
                     {
@@ -176,6 +179,35 @@
                         </a>
                     }
                 </div>
+
+                @if (totalPaginas > 1)
+                {
+                    <div style="display:flex; justify-content:center; gap:0.5rem; margin-top:1.5rem; flex-wrap:wrap;">
+                        @if (paginaAtual > 1)
+                        {
+                            <a class="btn-ghost"
+                               asp-controller="Produtos"
+                               asp-action="Index"
+                               asp-route-categoria="@categoriaAtual"
+                               asp-route-pesquisa="@pesquisaAtual"
+                               asp-route-ordem="@ordemAtual"
+                               asp-route-pagina="@(paginaAtual - 1)">Previous</a>
+                        }
+
+                        <span style="align-self:center;">Page @paginaAtual of @totalPaginas</span>
+
+                        @if (paginaAtual < totalPaginas)
+                        {
+                            <a class="btn-ghost"
+                               asp-controller="Produtos"
+                               asp-action="Index"
+                               asp-route-categoria="@categoriaAtual"
+                               asp-route-pesquisa="@pesquisaAtual"
+                               asp-route-ordem="@ordemAtual"
+                               asp-route-pagina="@(paginaAtual + 1)">Next</a>
+                        }
+                    </div>
+                }
             }
             else
             {

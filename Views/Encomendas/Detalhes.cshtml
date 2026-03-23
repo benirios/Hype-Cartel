@@ -1,0 +1,48 @@
+@model UserOrderViewModel
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+}
+
+<section class="catalog-hero">
+    <div class="container">
+        <h1 class="catalog-hero__title">ORDER #@Model.Id</h1>
+    </div>
+</section>
+
+<section class="container" style="padding-bottom: var(--space-xl);">
+    <div class="admin-panel__section">
+        <a class="btn-ghost" asp-controller="Encomendas" asp-action="Index">← Back to Orders</a>
+
+        <div style="margin-top:1rem;">
+            <p><strong>Date:</strong> @Model.CreatedAtUtc.ToString("u")</p>
+            <p><strong>Status:</strong> @Model.Status</p>
+            <p><strong>Subtotal:</strong> $@Model.Subtotal.ToString("0.00")</p>
+            <p><strong>VAT:</strong> $@Model.Vat.ToString("0.00")</p>
+            <p><strong>Total:</strong> $@Model.Total.ToString("0.00")</p>
+        </div>
+
+        <table style="width:100%; margin-top:1rem; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding:0.5rem;">Product</th>
+                    <th style="text-align:left; padding:0.5rem;">Size</th>
+                    <th style="text-align:right; padding:0.5rem;">Qty</th>
+                    <th style="text-align:right; padding:0.5rem;">Unit</th>
+                    <th style="text-align:right; padding:0.5rem;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var line in Model.Lines)
+            {
+                <tr>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d;">@line.ProductName</td>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d;">@(string.IsNullOrWhiteSpace(line.Size) ? "-" : line.Size)</td>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d; text-align:right;">@line.Quantity</td>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d; text-align:right;">$@line.UnitPrice.ToString("0.00")</td>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d; text-align:right;">$@line.Subtotal.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

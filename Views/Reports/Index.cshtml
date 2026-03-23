@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Admin · Reports";
+}
+
+<section class="catalog-hero">
+    <div class="container">
+        <h1 class="catalog-hero__title">ADMIN · REPORTS</h1>
+    </div>
+</section>
+
+<section class="container" style="padding-bottom: var(--space-xl);">
+    <div class="admin-panel">
+        <div class="admin-panel__section">
+            <h2 class="admin-panel__title">Available Reports</h2>
+            <div style="display:grid; gap:0.75rem;">
+                <a class="btn-outline" asp-controller="Reports" asp-action="TopProducts">Top 5 Products</a>
+                <a class="btn-outline" asp-controller="Reports" asp-action="MonthlyRevenue">Monthly Revenue</a>
+                <a class="btn-outline" asp-controller="Reports" asp-action="OrderStateDistribution">Orders by Status</a>
+                <a class="btn-outline" asp-controller="OrdersAdmin" asp-action="Index">Manage Orders</a>
+                <a class="btn-outline" asp-controller="OrdersAdmin" asp-action="History">Order Status History</a>
+            </div>
+        </div>
+    </div>
+</section>

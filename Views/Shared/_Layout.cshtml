@@ -40,6 +40,7 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <a class="navbar__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
+                    <a class="navbar__link" asp-controller="Reports" asp-action="Index">Reports</a>
                 }
             </div>
         </div>
@@ -51,6 +52,7 @@
             <!-- Account icon -->
             @if (User.Identity?.IsAuthenticated == true)
             {
+                <a class="navbar__link" asp-controller="Encomendas" asp-action="Index">My Orders</a>
                 <form asp-controller="Account" asp-action="Logout" method="post" class="navbar__logout-form">
                     @Html.AntiForgeryToken()
                     <button class="navbar__icon" type="submit" aria-label="Logout">
@@ -99,9 +101,11 @@
         @if (User.IsInRole("Admin"))
         {
             <a class="mobile-menu__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
+            <a class="mobile-menu__link" asp-controller="Reports" asp-action="Index">Reports</a>
         }
         @if (User.Identity?.IsAuthenticated == true)
         {
+            <a class="mobile-menu__link" asp-controller="Encomendas" asp-action="Index">My Orders</a>
             <form asp-controller="Account" asp-action="Logout" method="post" class="mobile-menu__logout-form">
                 @Html.AntiForgeryToken()
                 <button class="mobile-menu__link mobile-menu__link--button" type="submit">Logout</button>

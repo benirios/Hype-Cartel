@@ -1,0 +1,33 @@
+@model List<TopProductReportItem>
+@{
+    ViewData["Title"] = "Top Products";
+}
+
+<section class="catalog-hero">
+    <div class="container">
+        <h1 class="catalog-hero__title">TOP 5 PRODUCTS</h1>
+    </div>
+</section>
+
+<section class="container" style="padding-bottom: var(--space-xl);">
+    <div class="admin-panel__section">
+        <a class="btn-ghost" asp-controller="Reports" asp-action="Index">← Back to Reports</a>
+        <table style="width:100%; margin-top:1rem; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding:0.5rem;">Product</th>
+                    <th style="text-align:right; padding:0.5rem;">Units Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d;">@item.ProductName (#@item.ProductId)</td>
+                    <td style="padding:0.5rem; border-top:1px solid #2d2d2d; text-align:right;">@item.QuantitySold</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,75 +1,63 @@
+using MafiaStore.Data;
+using MafiaStore.Models;
 using MafiaStore.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace MafiaStore.Services;
 
 public sealed class CartStore : ICartStore
 {
+    private readonly ApplicationDbContext _db;
     private readonly IProductCatalogService _productCatalog;
-    private readonly object _syncRoot = new();
 
-    private readonly List<CarrinhoItemViewModel> _items = new()
+    public CartStore(ApplicationDbContext db, IProductCatalogService productCatalog)
     {
-        new()
-        {
-            Id = 1,
-            Nome = "Shadow Overcoat",
-            ImagemUrl = "/catalog/shadow-overcoat.svg",
-            Preco = 349m,
-            Quantidade = 1,
-            Tamanho = "L"
-        },
-        new()
-        {
-            Id = 5,
-            Nome = "Silk Noir Shirt",
-            ImagemUrl = "/catalog/silk-noir-shirt.svg",
-            Preco = 189m,
-            Quantidade = 2,
-            Tamanho = "M"
-        },
-        new()
-        {
-            Id = 11,
-            Nome = "Gold Signet Ring",
-            ImagemUrl = "/catalog/gold-signet-ring.svg",
-            Preco = 129m,
-            Quantidade = 1,
-            Tamanho = "M"
-        }
-    };
-
-    public CartStore(IProductCatalogService productCatalog)
-    {
+        _db = db;
         _productCatalog = productCatalog;
     }
 
-    public List<CarrinhoItemViewModel> GetItems()
+    public List<CarrinhoItemViewModel> GetItems(string ownerKey)
     {
-        lock (_syncRoot)
+        var cart = GetOrCreateCart(ownerKey);
+        var cartItems = _db.CartItems
+            .AsNoTracking()
+            .Where(i => i.CartId == cart.Id)
+            .OrderBy(i => i.Id)
+            .ToList();
+
+        var products = _productCatalog.GetAll().ToDictionary(p => p.Id);
+        var result = new List<CarrinhoItemViewModel>();
+        foreach (var item in cartItems)
         {
-            return _items
-                .Select(item => new CarrinhoItemViewModel
-                {
-                    Id = item.Id,
-                    Nome = item.Nome,
-                    ImagemUrl = item.ImagemUrl,
-                    Preco = item.Preco,
-                    Quantidade = item.Quantidade,
-                    Tamanho = item.Tamanho
-                })
-                .ToList();
+            if (!products.TryGetValue(item.ProductId, out var product))
+            {
+                continue;
+            }
+
+            result.Add(new CarrinhoItemViewModel
+            {
+                Id = product.Id,
+                Nome = product.Nome,
+                ImagemUrl = product.ImagemUrl,
+                Preco = product.Preco,
+                Quantidade = item.Quantity,
+                Tamanho = item.Size
+            });
         }
+
+        return result;
     }
 
-    public int GetCartCount()
+    public int GetCartCount(string ownerKey)
     {
-        lock (_syncRoot)
-        {
-            return _items.Sum(item => item.Quantidade);
-        }
+        var cart = GetOrCreateCart(ownerKey);
+        return _db.CartItems
+            .AsNoTracking()
+            .Where(i => i.CartId == cart.Id)
+            .Sum(i => (int?)i.Quantity) ?? 0;
     }
 
-    public bool AddItem(int produtoId, string? tamanho)
+    public bool AddItem(string ownerKey, int produtoId, string? tamanho)
     {
         var produto = _productCatalog.GetById(produtoId);
         if (produto is null)
@@ -80,76 +68,124 @@ public sealed class CartStore : ICartStore
         var defaultSize = produto.Tamanhos.FirstOrDefault() ?? "M";
         var normalizedSize = NormalizeSize(tamanho, defaultSize);
 
-        lock (_syncRoot)
+        var cart = GetOrCreateCart(ownerKey);
+        var existing = _db.CartItems.FirstOrDefault(item =>
+            item.CartId == cart.Id &&
+            item.ProductId == produtoId &&
+            item.Size == normalizedSize);
+
+        if (existing is not null)
         {
-            var existing = _items.FirstOrDefault(item =>
-                item.Id == produtoId &&
-                item.Tamanho.Equals(normalizedSize, StringComparison.OrdinalIgnoreCase));
-
-            if (existing is not null)
+            existing.Quantity += 1;
+        }
+        else
+        {
+            _db.CartItems.Add(new CartItem
             {
-                existing.Quantidade++;
-                return true;
-            }
-
-            _items.Add(new CarrinhoItemViewModel
-            {
-                Id = produto.Id,
-                Nome = produto.Nome,
-                ImagemUrl = produto.ImagemUrl,
-                Preco = produto.Preco,
-                Quantidade = 1,
-                Tamanho = normalizedSize
+                CartId = cart.Id,
+                ProductId = produtoId,
+                Size = normalizedSize,
+                Quantity = 1
             });
-
-            return true;
         }
+
+        cart.UpdatedAtUtc = DateTime.UtcNow;
+        _db.SaveChanges();
+        return true;
     }
 
-    public bool UpdateQuantity(int produtoId, string? tamanho, int quantidade)
+    public bool UpdateQuantity(string ownerKey, int produtoId, string? tamanho, int quantidade)
     {
+        var cart = GetOrCreateCart(ownerKey);
         var normalizedSize = NormalizeSize(tamanho);
 
-        lock (_syncRoot)
+        var existing = _db.CartItems.FirstOrDefault(item =>
+            item.CartId == cart.Id &&
+            item.ProductId == produtoId &&
+            item.Size == normalizedSize);
+
+        if (existing is null)
         {
-            var existing = _items.FirstOrDefault(item =>
-                item.Id == produtoId &&
-                item.Tamanho.Equals(normalizedSize, StringComparison.OrdinalIgnoreCase));
-
-            if (existing is null)
-            {
-                return false;
-            }
-
-            if (quantidade <= 0)
-            {
-                _items.Remove(existing);
-                return true;
-            }
-
-            existing.Quantidade = quantidade;
-            return true;
+            return false;
         }
+
+        if (quantidade <= 0)
+        {
+            _db.CartItems.Remove(existing);
+        }
+        else
+        {
+            existing.Quantity = quantidade;
+        }
+
+        cart.UpdatedAtUtc = DateTime.UtcNow;
+        _db.SaveChanges();
+        return true;
     }
 
-    public bool RemoveItem(int produtoId, string? tamanho)
+    public bool RemoveItem(string ownerKey, int produtoId, string? tamanho)
     {
+        var cart = GetOrCreateCart(ownerKey);
         var normalizedSize = NormalizeSize(tamanho);
 
-        lock (_syncRoot)
+        var existing = _db.CartItems.FirstOrDefault(item =>
+            item.CartId == cart.Id &&
+            item.ProductId == produtoId &&
+            item.Size == normalizedSize);
+
+        if (existing is null)
         {
-            var existing = _items.FirstOrDefault(item =>
-                item.Id == produtoId &&
-                item.Tamanho.Equals(normalizedSize, StringComparison.OrdinalIgnoreCase));
+            return false;
+        }
 
-            if (existing is null)
-            {
-                return false;
-            }
+        _db.CartItems.Remove(existing);
+        cart.UpdatedAtUtc = DateTime.UtcNow;
+        _db.SaveChanges();
+        return true;
+    }
 
-            _items.Remove(existing);
+    public bool Clear(string ownerKey)
+    {
+        var cart = GetOrCreateCart(ownerKey);
+        var items = _db.CartItems.Where(i => i.CartId == cart.Id).ToList();
+        if (items.Count == 0)
+        {
             return true;
         }
+
+        _db.CartItems.RemoveRange(items);
+        cart.UpdatedAtUtc = DateTime.UtcNow;
+        _db.SaveChanges();
+        return true;
+    }
+
+    private Cart GetOrCreateCart(string ownerKey)
+    {
+        var normalizedOwner = NormalizeOwnerKey(ownerKey);
+        var cart = _db.Carts.FirstOrDefault(c => c.OwnerKey == normalizedOwner);
+        if (cart is not null)
+        {
+            return cart;
+        }
+
+        cart = new Cart
+        {
+            OwnerKey = normalizedOwner,
+            UpdatedAtUtc = DateTime.UtcNow
+        };
+        _db.Carts.Add(cart);
+        _db.SaveChanges();
+        return cart;
+    }
+
+    private static string NormalizeOwnerKey(string? ownerKey)
+    {
+        if (string.IsNullOrWhiteSpace(ownerKey))
+        {
+            throw new ArgumentException("Cart owner key cannot be empty.", nameof(ownerKey));
+        }
+
+        return ownerKey.Trim();
     }
 
     private static string NormalizeSize(string? size, string fallback = "M")
