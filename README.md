@@ -30,12 +30,3 @@ Hype-Cartel/
 ├── tests/
 └── README.md
 ```
-
-## Configuration
-Ensure to set up your configuration files according to the environment you are running. Use `.env.example` as a reference.
-
-## Contributing
-We welcome contributions! Please follow the guidelines outlined in `CONTRIBUTING.md` before submitting your contributions.
-
-## License
-This project is licensed under the [Your License Here] license.
