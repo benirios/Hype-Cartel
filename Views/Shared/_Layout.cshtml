@@ -39,6 +39,7 @@
                 <a class="navbar__link" asp-controller="Home" asp-action="Index">About</a>
                 @if (User.IsInRole("Admin"))
                 {
+                    <a class="navbar__link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
                     <a class="navbar__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
                     <a class="navbar__link" asp-controller="Reports" asp-action="Index">Reports</a>
                 }
@@ -100,6 +101,7 @@
         <a class="mobile-menu__link" asp-controller="Home" asp-action="Index">About</a>
         @if (User.IsInRole("Admin"))
         {
+            <a class="mobile-menu__link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
             <a class="mobile-menu__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
             <a class="mobile-menu__link" asp-controller="Reports" asp-action="Index">Reports</a>
         }

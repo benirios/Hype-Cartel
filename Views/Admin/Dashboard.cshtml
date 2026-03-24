@@ -1,0 +1,199 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin · Dashboard";
+
+    var maxMonthlyRevenue = Model.MonthlyRevenue.Count > 0 ? Model.MonthlyRevenue.Max(x => x.Revenue) : 0m;
+    var maxTopProductQty = Model.TopProducts.Count > 0 ? Model.TopProducts.Max(x => x.QuantitySold) : 0;
+    var totalStatusOrders = Model.OrdersByStatus.Sum(x => x.Count);
+}
+
+<section class="catalog-hero">
+    <div class="container">
+        <h1 class="catalog-hero__title">ADMIN · DASHBOARD</h1>
+    </div>
+</section>
+
+<section class="container admin-dashboard">
+    <div class="admin-dashboard__kpis">
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Total Revenue</span>
+            <strong class="admin-kpi-card__value">$@Model.TotalRevenue.ToString("0.00")</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Total Orders</span>
+            <strong class="admin-kpi-card__value">@Model.TotalOrders</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Avg Order Value</span>
+            <strong class="admin-kpi-card__value">$@Model.AverageOrderValue.ToString("0.00")</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Pending Orders</span>
+            <strong class="admin-kpi-card__value">@Model.PendingOrders</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Products</span>
+            <strong class="admin-kpi-card__value">@Model.TotalProducts</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Categories</span>
+            <strong class="admin-kpi-card__value">@Model.TotalCategories</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Users</span>
+            <strong class="admin-kpi-card__value">@Model.TotalUsers</strong>
+        </article>
+        <article class="admin-kpi-card">
+            <span class="admin-kpi-card__label">Low Stock (≤5)</span>
+            <strong class="admin-kpi-card__value">@Model.LowStockProducts</strong>
+        </article>
+    </div>
+
+    <div class="admin-dashboard__grid">
+        <article class="admin-dashboard-card">
+            <header class="admin-dashboard-card__head">
+                <h2>Revenue by Month</h2>
+                <span class="admin-dashboard-card__sub">Last 12 months</span>
+            </header>
+            @if (Model.MonthlyRevenue.Count == 0)
+            {
+                <p class="admin-dashboard-card__empty">No order data yet to render this chart.</p>
+            }
+            else
+            {
+                <div class="admin-bars-chart" role="img" aria-label="Monthly revenue chart">
+                    @foreach (var item in Model.MonthlyRevenue)
+                    {
+                        var heightPct = maxMonthlyRevenue > 0
+                            ? Math.Max(8m, Math.Round((item.Revenue / maxMonthlyRevenue) * 100m, 0))
+                            : 0m;
+                        <div class="admin-bars-chart__col" title="@item.Year-@item.Month.ToString("00"): $@item.Revenue.ToString("0.00")">
+                            <div class="admin-bars-chart__bar" style="height:@heightPct%;"></div>
+                            <span class="admin-bars-chart__label">@item.Month.ToString("00")/@item.Year.ToString()[2..]</span>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="admin-dashboard-card">
+            <header class="admin-dashboard-card__head">
+                <h2>Orders by Status</h2>
+                <span class="admin-dashboard-card__sub">@totalStatusOrders total</span>
+            </header>
+            @if (Model.OrdersByStatus.Count == 0)
+            {
+                <p class="admin-dashboard-card__empty">No order status data available.</p>
+            }
+            else
+            {
+                <div class="admin-progress-list">
+                    @foreach (var item in Model.OrdersByStatus)
+                    {
+                        var pct = totalStatusOrders > 0
+                            ? Math.Round((decimal)item.Count / totalStatusOrders * 100m, 1)
+                            : 0m;
+                        var widthPct = pct > 0 ? Math.Max(6m, pct) : 0m;
+
+                        <div class="admin-progress-list__item">
+                            <div class="admin-progress-list__meta">
+                                <span>@item.Status</span>
+                                <span>@item.Count (@pct.ToString("0.#")%)</span>
+                            </div>
+                            <div class="admin-progress-list__track">
+                                <span class="admin-progress-list__fill" style="width:@widthPct%;"></span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="admin-dashboard-card">
+            <header class="admin-dashboard-card__head">
+                <h2>Top Selling Products</h2>
+                <span class="admin-dashboard-card__sub">Units sold</span>
+            </header>
+            @if (Model.TopProducts.Count == 0)
+            {
+                <p class="admin-dashboard-card__empty">No sales recorded yet.</p>
+            }
+            else
+            {
+                <div class="admin-progress-list">
+                    @foreach (var item in Model.TopProducts)
+                    {
+                        var pct = maxTopProductQty > 0
+                            ? Math.Round((decimal)item.QuantitySold / maxTopProductQty * 100m, 1)
+                            : 0m;
+                        var widthPct = pct > 0 ? Math.Max(8m, pct) : 0m;
+
+                        <div class="admin-progress-list__item">
+                            <div class="admin-progress-list__meta">
+                                <span>@item.ProductName</span>
+                                <span>@item.QuantitySold</span>
+                            </div>
+                            <div class="admin-progress-list__track">
+                                <span class="admin-progress-list__fill admin-progress-list__fill--alt" style="width:@widthPct%;"></span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="admin-dashboard-card">
+            <header class="admin-dashboard-card__head">
+                <h2>Quick Management</h2>
+            </header>
+            <div class="admin-dashboard-links">
+                <a class="btn-outline" asp-controller="Admin" asp-action="Produtos">Manage Products & Categories</a>
+                <a class="btn-outline" asp-controller="OrdersAdmin" asp-action="Index">Manage Orders</a>
+                <a class="btn-outline" asp-controller="OrdersAdmin" asp-action="History">Order Status History</a>
+                <a class="btn-outline" asp-controller="Reports" asp-action="Index">Open Reports</a>
+            </div>
+        </article>
+    </div>
+
+    <article class="admin-dashboard-card">
+        <header class="admin-dashboard-card__head">
+            <h2>Recent Orders</h2>
+        </header>
+        @if (Model.RecentOrders.Count == 0)
+        {
+            <p class="admin-dashboard-card__empty">No orders yet.</p>
+        }
+        else
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Created</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                        <tr>
+                            <td>#@order.OrderId</td>
+                            <td>@order.UserId</td>
+                            <td>@order.Status</td>
+                            <td>$@order.Total.ToString("0.00")</td>
+                            <td>@order.CreatedAtUtc.ToString("u")</td>
+                            <td>
+                                <a class="btn-ghost" asp-controller="OrdersAdmin" asp-action="Detalhes" asp-route-id="@order.OrderId">Details</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </article>
+</section>

@@ -33,12 +33,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "full_history.md",
+                "file": "steps.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "full_history"
+              "title": "steps"
             }
           }
         ]
@@ -64,7 +64,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "Explorador de ficheiros"
             }
           },
           {
@@ -194,29 +194,29 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "switcher:Abrir Quick Switcher": false,
+      "graph:Abrir Visualização de diagrama de grafo": false,
+      "canvas:Criar novo Canvas": false,
+      "daily-notes:Abrir nota de hoje": false,
+      "templates:Inserir templates": false,
+      "command-palette:Abrir paleta de comando": false,
+      "bases:Criar nova base": false
     }
   },
-  "active": "113c62e9a26d0699",
+  "active": "9ecc003ded8fcdaf",
   "lastOpenFiles": [
+    "steps.md",
+    "pdfs.md",
+    "resume_instructions.md",
+    "points.md",
     "Context.md",
     "full_history.md",
-    "resume_instructions.md",
     "memory_index.md",
     "context/ref-LiquidNavBar.png",
     "context/ref-LiquidShopNow.png",
     "context/users.json",
     "context/ref1.png",
     "context",
-    "steps.md",
-    "pdfs.md",
-    "points.md",
     "README.md",
     "PROJECT_CONTEXT.md",
     "Files/UFCD10792-TFinal-Enunciado_Oficial_Loja_Online.pdf",

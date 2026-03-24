@@ -107,4 +107,44 @@ Contact points in the code (where to change for common tasks)
 - Modify seed data: Data/SeedData.cs and Data/IdentitySeedData.cs
 - Debug legacy migration: Data/LegacyJsonDataMigrator.cs
 
+---
+
+## [2026-03-24] UI refresh + Admin dashboard enhancement
+
+### Scope executed
+- Reviewed full repository with primary focus on `Memory/`.
+- Implemented requested visual/UI updates and created a consolidated admin dashboard while preserving existing admin screens.
+
+### Changes made
+- Homepage featured curation:
+  - `Controllers/HomeController.cs`
+  - homepage now returns exactly 4 curated formal products (3 suit/blazer-first + 1 formal adjacent item) with fallback.
+
+- Visual refresh:
+  - `wwwroot/css/site.css`
+  - `Views/Home/Index.cshtml`
+  - replaced warm gold-like accent palette with neutral white/gray accent tokens.
+  - applied subtle, consistent rounding to product imagery and key interactive controls.
+  - neutralized category gradients that had warmer/yellowish tones.
+
+- New admin dashboard:
+  - `Controllers/AdminController.cs` (`Dashboard` action, admin-only)
+  - `Models/ViewModels/AdminDashboardViewModel.cs` (new)
+  - `Views/Admin/Dashboard.cshtml` (new)
+  - `Views/Shared/_Layout.cshtml` (dashboard link for admin in desktop/mobile nav)
+  - dashboard includes KPI cards, lightweight built-in chart visuals (CSS bars/progress), quick management links, and recent orders table.
+
+### Validation performed
+- Build:
+  - `dotnet build ./MafiaStore.csproj` ✅ success
+- Tests:
+  - `dotnet test ./MafiaStore.csproj` ✅ success (no tests found in this project)
+  - `dotnet test ./Hype-Cartel.sln` ⚠️ failed due to missing project file:
+    - `Tests\IntegrationTests\IntegrationTests.csproj` not found.
+  - This appears to be a pre-existing solution inconsistency.
+
+### Outcome
+- Requested UI modernization and dashboard centralization were delivered.
+- Existing admin/report/order pages remain intact and linked from the new dashboard.
+
 End of full history.

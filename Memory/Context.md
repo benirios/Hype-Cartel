@@ -246,3 +246,51 @@ End of PROJECT_CONTEXT.md
 
 Notes: added Memory/memory_index.md as a central index file and created backlinks above. Update these backlinks if file names change; Obsidian will resolve them.
 
+---
+
+## Progress log — 2026-03-24 (UI refresh + Admin Dashboard)
+
+### Implemented in this session
+- ✅ Homepage highlights curated for formal style:
+  - `HomeController.Index` now selects **exactly 4 featured items** with deterministic logic:
+    - prioritizes 3 suit/blazer-style items,
+    - then adds 1 formal adjacent piece (oxford/moccasin/polo-like),
+    - includes a safe fallback to remaining products if needed.
+  - This aligns with the requested “4 example products focused on suits/fatos”.
+
+- ✅ Visual polish and neutral palette pass:
+  - `wwwroot/css/site.css` updated to replace warm gold/yellow accent tokens with clean white/gray accents while preserving dark mode.
+  - Added consistent subtle radius tokens (`--radius-sm/md/lg`) and applied rounding to:
+    - product images/cards,
+    - detail main image/thumbnails,
+    - cart product image,
+    - key buttons and inputs.
+  - Homepage category gradient tones were neutralized in:
+    - `Views/Home/Index.cshtml`
+    - category fallback classes in `site.css`.
+
+- ✅ New Admin Dashboard (without external CDN dependency):
+  - Added `AdminController.Dashboard` (admin-only) aggregating:
+    - KPI totals (products, categories, users, orders, revenue, pending orders, low-stock),
+    - monthly revenue,
+    - order status distribution,
+    - top sold products,
+    - recent orders.
+  - Added view model:
+    - `Models/ViewModels/AdminDashboardViewModel.cs`
+  - Added UI:
+    - `Views/Admin/Dashboard.cshtml`
+    - includes KPI cards, CSS-based chart blocks (bars/progress), quick-management links, recent orders table.
+  - Navigation wired in:
+    - `Views/Shared/_Layout.cshtml` (desktop + mobile admin menus).
+
+### Validation results
+- `dotnet build ./MafiaStore.csproj` ✅ passed after implementation.
+- `dotnet test ./MafiaStore.csproj` ✅ passed (no tests in that project).
+- `dotnet test ./Hype-Cartel.sln` ⚠️ fails due to missing project reference:
+  - `Tests\IntegrationTests\IntegrationTests.csproj` not found in repo.
+  - This is pre-existing repository state and not introduced by this UI/dashboard change.
+
+### Notes
+- UI intent preserved: modern dark style remains, with cleaner neutral accenting.
+- Dashboard intentionally keeps existing Admin/Reports/Orders screens and adds a central control entry point instead of replacing prior flows.

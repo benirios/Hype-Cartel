@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MafiaStore.Data;
 using MafiaStore.Models;
 using MafiaStore.Models.ViewModels;
@@ -33,6 +34,119 @@ public class AdminController : Controller
         ViewBag.Categorias = categorias;
 
         return View(produtos);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Dashboard()
+    {
+        var totalProducts = await _db.Products.CountAsync();
+        var totalCategories = await _db.Categories.CountAsync();
+        var totalUsers = await _db.Users.CountAsync();
+        var totalOrders = await _db.Orders.CountAsync();
+        var totalRevenue = await _db.Orders.SumAsync(o => (decimal?)o.Total) ?? 0m;
+        var pendingOrders = await _db.Orders.CountAsync(o => o.Status == OrderStatus.Pending);
+        var lowStockProducts = await _db.Products.CountAsync(p => p.Stock <= 5);
+
+        var monthlyRevenueRaw = await _db.Orders
+            .AsNoTracking()
+            .GroupBy(o => new { o.CreatedAtUtc.Year, o.CreatedAtUtc.Month })
+            .Select(g => new
+            {
+                g.Key.Year,
+                g.Key.Month,
+                Revenue = g.Sum(x => x.Total),
+                OrdersCount = g.Count()
+            })
+            .OrderBy(x => x.Year)
+            .ThenBy(x => x.Month)
+            .Take(12)
+            .ToListAsync();
+
+        var orderStatusRaw = await _db.Orders
+            .AsNoTracking()
+            .GroupBy(o => o.Status)
+            .Select(g => new
+            {
+                Status = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(x => x.Count)
+            .ToListAsync();
+
+        var topProductsRaw = await _db.OrderLines
+            .AsNoTracking()
+            .GroupBy(l => new { l.ProductId, l.ProductName })
+            .Select(g => new
+            {
+                g.Key.ProductId,
+                g.Key.ProductName,
+                QuantitySold = g.Sum(x => x.Quantity)
+            })
+            .OrderByDescending(x => x.QuantitySold)
+            .ThenBy(x => x.ProductName)
+            .Take(5)
+            .ToListAsync();
+
+        var recentOrdersRaw = await _db.Orders
+            .AsNoTracking()
+            .OrderByDescending(o => o.CreatedAtUtc)
+            .Take(8)
+            .Select(o => new
+            {
+                o.Id,
+                o.UserId,
+                o.Status,
+                o.Total,
+                o.CreatedAtUtc
+            })
+            .ToListAsync();
+
+        var vm = new AdminDashboardViewModel
+        {
+            TotalProducts = totalProducts,
+            TotalCategories = totalCategories,
+            TotalUsers = totalUsers,
+            TotalOrders = totalOrders,
+            TotalRevenue = totalRevenue,
+            PendingOrders = pendingOrders,
+            LowStockProducts = lowStockProducts,
+            MonthlyRevenue = monthlyRevenueRaw
+                .Select(x => new DashboardMonthlyRevenueItem
+                {
+                    Year = x.Year,
+                    Month = x.Month,
+                    Revenue = x.Revenue,
+                    OrdersCount = x.OrdersCount
+                })
+                .ToList(),
+            OrdersByStatus = orderStatusRaw
+                .Select(x => new DashboardOrderStatusItem
+                {
+                    Status = x.Status.ToString(),
+                    Count = x.Count
+                })
+                .ToList(),
+            TopProducts = topProductsRaw
+                .Select(x => new DashboardTopProductItem
+                {
+                    ProductId = x.ProductId,
+                    ProductName = x.ProductName,
+                    QuantitySold = x.QuantitySold
+                })
+                .ToList(),
+            RecentOrders = recentOrdersRaw
+                .Select(x => new DashboardRecentOrderItem
+                {
+                    OrderId = x.Id,
+                    UserId = x.UserId,
+                    Status = x.Status.ToString(),
+                    Total = x.Total,
+                    CreatedAtUtc = x.CreatedAtUtc
+                })
+                .ToList()
+        };
+
+        return View(vm);
     }
 
     [HttpPost]
