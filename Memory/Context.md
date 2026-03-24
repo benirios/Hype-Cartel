@@ -294,3 +294,111 @@ Notes: added Memory/memory_index.md as a central index file and created backlink
 ### Notes
 - UI intent preserved: modern dark style remains, with cleaner neutral accenting.
 - Dashboard intentionally keeps existing Admin/Reports/Orders screens and adds a central control entry point instead of replacing prior flows.
+
+---
+
+## Planning context update — 2026-03-24 (next implementation phase)
+
+### New target (confirmed)
+Build a **single unified admin dashboard** that centralizes:
+- products (including price + stock management),
+- categories,
+- orders and status transitions,
+- users (list/search, role change, activate/deactivate),
+- charts/reports.
+
+### Decisions locked for phase 1
+- Implement dashboard consolidation first; postpone SQL Server migration to a future phase.
+- Replace legacy separate admin/report/order pages in this phase.
+- Keep stock model as global stock per product (no per-size stock in this phase).
+- Keep same visual language/aesthetic used across current site.
+
+### Baseline before implementation
+- `dotnet build ./MafiaStore.csproj` passes.
+- `dotnet test ./MafiaStore.csproj` passes.
+- `dotnet test ./Hype-Cartel.sln` currently fails due to missing `Tests/IntegrationTests/IntegrationTests.csproj` referenced by solution.
+
+### Active implementation plan file
+- `/home/guts/.copilot/session-state/0ce62cc5-cf0d-422f-b1b2-81e56863b7b5/plan.md`
+
+---
+
+## Progress log — 2026-03-24 (Unified Admin Dashboard phase 1 implemented)
+
+### Goal delivered
+Backoffice is now centralized in a single dashboard management page (`Admin/Dashboard`) with integrated sections for:
+- products (including price + stock editing),
+- categories,
+- orders (list/detail/status transitions/history),
+- users (search/list, role switch, activate/deactivate),
+- reports/charts (top products, monthly revenue, order status distribution).
+
+### Technical highlights
+- `AdminController` expanded to aggregate and mutate all admin domains from one controller/view flow.
+- `ProdutoViewModel` gained `Stock`; EF store and JSON fallback store were aligned to persist/read stock consistently.
+- User-admin actions use Identity APIs with safety rules:
+  - cannot remove/deactivate last admin,
+  - cannot deactivate current logged admin account.
+- Legacy admin/report/order flows replaced by dashboard-first navigation:
+  - old controllers redirect into dashboard tabs;
+  - old dedicated views removed.
+
+### Validation status after implementation
+- `dotnet build ./MafiaStore.csproj` ✅
+- `dotnet test ./MafiaStore.csproj` ✅
+- `dotnet test ./Hype-Cartel.sln` ✅
+  - fixed by removing stale missing IntegrationTests project reference from solution file.
+
+---
+
+## Hotfix update — 2026-03-24 (Dashboard runtime stability on SQLite)
+
+### Problem observed
+- Admin dashboard endpoint (`/Admin/Dashboard`) crashed at runtime with:
+  - `NotSupportedException` for SQLite `SUM` over `decimal`.
+
+### Applied correction
+- In `AdminController.Dashboard`, revenue aggregates were adapted for SQLite compatibility:
+  - SQL-side aggregation now uses `double?`,
+  - UI-facing values are converted/rounded back to `decimal`.
+- Monthly revenue query also adjusted to correctly represent the latest 12 months while preserving chronological display order.
+
+### Current status after hotfix
+- Build/test still green:
+  - `dotnet build ./MafiaStore.csproj` ✅
+  - `dotnet test ./MafiaStore.csproj` ✅
+  - `dotnet test ./Hype-Cartel.sln` ✅
+- Runtime smoke check confirms dashboard now opens without the previous exception.
+
+---
+
+## Context update — 2026-03-24 (Obsidian expansion only)
+
+### Scope lock
+- Current phase is documentation/planning only in `Memory/`.
+- Application code must remain unchanged in this phase.
+
+### What was produced in Memory
+- Full planning corpus for ecommerce maturity:
+  - strategy/product roadmap and prioritized backlog,
+  - architecture and SQL/ER documentation,
+  - OWASP/security/auth/privacy/secrets policies,
+  - operations docs for stock/payment/logistics/support,
+  - QA/release/runbooks,
+  - growth docs for SEO/KPI/CRO/content.
+- Cross-cutting synthesis docs:
+  - `Memory/gaps_producao_readiness.md`
+  - `Memory/matriz_riscos_dependencias.md`
+- `Memory/memory_index.md` upgraded to complete vault navigation with domain grouping.
+
+### External references used
+- Google ecommerce SEO docs and SEO starter guide.
+- Stripe Checkout docs for payment architecture direction.
+- OWASP Top 10 for security baseline checklisting.
+
+### Key planning conclusion
+- Current codebase is solid as MVP foundation, but production-readiness still depends on P0 closure:
+  - payment gateway + webhook reconciliation,
+  - security hardening and secret governance,
+  - automated tests baseline,
+  - observability and incident/deploy runbooks in active use.

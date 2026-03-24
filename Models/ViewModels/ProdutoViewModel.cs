@@ -6,6 +6,7 @@ public class ProdutoViewModel
     public string Nome { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
     public decimal Preco { get; set; }
+    public int Stock { get; set; } = 100;
     public string ImagemUrl { get; set; } = string.Empty;
     public string Categoria { get; set; } = string.Empty;
     public string Descricao { get; set; } = string.Empty;

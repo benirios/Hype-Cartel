@@ -203,6 +203,7 @@ public sealed class ProductCatalogService : IProductCatalogService
             Nome = source.Name ?? "Untitled Product",
             Slug = Slugify(string.IsNullOrWhiteSpace(source.Slug) ? source.Name ?? $"produto-{id}" : source.Slug),
             Preco = source.Price ?? 0m,
+            Stock = source.Stock ?? 0,
             ImagemUrl = NormalizeAssetPath(primaryImage),
             Categoria = categoria,
             Descricao = source.Description ?? string.Empty,
@@ -231,7 +232,7 @@ public sealed class ProductCatalogService : IProductCatalogService
             Description = source.Descricao.Trim(),
             CategoryId = MapCategoryNameToId(source.Categoria),
             Images = images,
-            Stock = 100,
+            Stock = source.Stock,
             Sizes = source.Tamanhos
                 .Where(t => !string.IsNullOrWhiteSpace(t))
                 .Select(t => t.Trim().ToUpperInvariant())
@@ -249,6 +250,7 @@ public sealed class ProductCatalogService : IProductCatalogService
             Nome = source.Nome,
             Slug = source.Slug,
             Preco = source.Preco,
+            Stock = source.Stock,
             ImagemUrl = source.ImagemUrl,
             Categoria = source.Categoria,
             Descricao = source.Descricao,
@@ -275,6 +277,12 @@ public sealed class ProductCatalogService : IProductCatalogService
         if (produto.Preco < 0)
         {
             error = "Product price cannot be negative.";
+            return false;
+        }
+
+        if (produto.Stock < 0)
+        {
+            error = "Product stock cannot be negative.";
             return false;
         }
 
@@ -363,6 +371,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Shadow Overcoat",
                 Slug = "shadow-overcoat",
                 Preco = 349m,
+                Stock = 100,
                 ImagemUrl = "/catalog/shadow-overcoat.svg",
                 Categoria = "Outerwear",
                 Descricao = "A floor-grazing silhouette cut from heavyweight wool-blend cloth. The Shadow Overcoat drapes the body in architectural darkness.",
@@ -375,6 +384,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Phantom Bomber",
                 Slug = "phantom-bomber",
                 Preco = 289m,
+                Stock = 100,
                 ImagemUrl = "/catalog/phantom-bomber.svg",
                 Categoria = "Outerwear",
                 Descricao = "Matte nylon shell with washed silk lining. Minimal hardware and maximum intent.",
@@ -387,6 +397,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Noir Trench",
                 Slug = "noir-trench",
                 Preco = 389m,
+                Stock = 100,
                 ImagemUrl = "/catalog/noir-trench.svg",
                 Categoria = "Outerwear",
                 Descricao = "Double-breasted and cut from water-resistant cotton twill for refined drama.",
@@ -399,6 +410,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Obsidian Parka",
                 Slug = "obsidian-parka",
                 Preco = 329m,
+                Stock = 100,
                 ImagemUrl = "/catalog/obsidian-parka.svg",
                 Categoria = "Outerwear",
                 Descricao = "Insulated and waxed for winter nights, with deep pockets and shadowed silhouette.",
@@ -411,6 +423,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Silk Noir Shirt",
                 Slug = "silk-noir-shirt",
                 Preco = 189m,
+                Stock = 100,
                 ImagemUrl = "/catalog/silk-noir-shirt.svg",
                 Categoria = "Shirts",
                 Descricao = "Pure silk with hidden placket and clean drape.",
@@ -423,6 +436,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Ghost Linen Tee",
                 Slug = "ghost-linen-tee",
                 Preco = 89m,
+                Stock = 100,
                 ImagemUrl = "/catalog/ghost-linen-tee.svg",
                 Categoria = "Shirts",
                 Descricao = "Washed linen essential with relaxed shoulder and breathable structure.",
@@ -435,6 +449,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Cartel Oxford",
                 Slug = "cartel-oxford",
                 Preco = 149m,
+                Stock = 100,
                 ImagemUrl = "/catalog/cartel-oxford.svg",
                 Categoria = "Shirts",
                 Descricao = "Structured Japanese cotton shirt balancing ceremony and edge.",
@@ -447,6 +462,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Midnight Henley",
                 Slug = "midnight-henley",
                 Preco = 109m,
+                Stock = 100,
                 ImagemUrl = "/catalog/midnight-henley.svg",
                 Categoria = "Shirts",
                 Descricao = "Heavyweight slub cotton henley for after-hours layering.",
@@ -459,6 +475,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Eclipse Trousers",
                 Slug = "eclipse-trousers",
                 Preco = 179m,
+                Stock = 100,
                 ImagemUrl = "/catalog/eclipse-trousers.svg",
                 Categoria = "Trousers",
                 Descricao = "Wide-leg fluid wool trousers inspired by Italian cinema silhouettes.",
@@ -471,6 +488,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Sovereign Cargos",
                 Slug = "sovereign-cargos",
                 Preco = 199m,
+                Stock = 100,
                 ImagemUrl = "/catalog/sovereign-cargos.svg",
                 Categoria = "Trousers",
                 Descricao = "Articulated cargo trousers with concealed utility pockets.",
@@ -483,6 +501,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Gold Signet Ring",
                 Slug = "gold-signet-ring",
                 Preco = 129m,
+                Stock = 100,
                 ImagemUrl = "/catalog/gold-signet-ring.svg",
                 Categoria = "Accessories",
                 Descricao = "18k gold-plated signet with matte face and engraved crest.",
@@ -495,6 +514,7 @@ public sealed class ProductCatalogService : IProductCatalogService
                 Nome = "Onyx Chain",
                 Slug = "onyx-chain",
                 Preco = 159m,
+                Stock = 100,
                 ImagemUrl = "/catalog/onyx-chain.svg",
                 Categoria = "Accessories",
                 Descricao = "Black rhodium-plated silver chain with faceted onyx beads.",

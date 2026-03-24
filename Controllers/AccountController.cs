@@ -56,7 +56,7 @@ public class AccountController : Controller
         var user = await _userManager.FindByNameAsync(model.Username);
         var isAdmin = user is not null && await _userManager.IsInRoleAsync(user, "Admin");
         return isAdmin
-            ? RedirectToAction("Produtos", "Admin")
+            ? RedirectToAction("Dashboard", "Admin")
             : RedirectToAction("Index", "Home");
     }
 

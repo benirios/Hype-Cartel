@@ -5,76 +5,647 @@
     var maxMonthlyRevenue = Model.MonthlyRevenue.Count > 0 ? Model.MonthlyRevenue.Max(x => x.Revenue) : 0m;
     var maxTopProductQty = Model.TopProducts.Count > 0 ? Model.TopProducts.Max(x => x.QuantitySold) : 0;
     var totalStatusOrders = Model.OrdersByStatus.Sum(x => x.Count);
+    var categories = Model.Categories;
 }
 
 <section class="catalog-hero">
     <div class="container">
-        <h1 class="catalog-hero__title">ADMIN · DASHBOARD</h1>
+        <h1 class="catalog-hero__title">ADMIN · MANAGEMENT DASHBOARD</h1>
     </div>
 </section>
 
 <section class="container admin-dashboard">
-    <div class="admin-dashboard__kpis">
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Total Revenue</span>
-            <strong class="admin-kpi-card__value">$@Model.TotalRevenue.ToString("0.00")</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Total Orders</span>
-            <strong class="admin-kpi-card__value">@Model.TotalOrders</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Avg Order Value</span>
-            <strong class="admin-kpi-card__value">$@Model.AverageOrderValue.ToString("0.00")</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Pending Orders</span>
-            <strong class="admin-kpi-card__value">@Model.PendingOrders</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Products</span>
-            <strong class="admin-kpi-card__value">@Model.TotalProducts</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Categories</span>
-            <strong class="admin-kpi-card__value">@Model.TotalCategories</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Users</span>
-            <strong class="admin-kpi-card__value">@Model.TotalUsers</strong>
-        </article>
-        <article class="admin-kpi-card">
-            <span class="admin-kpi-card__label">Low Stock (≤5)</span>
-            <strong class="admin-kpi-card__value">@Model.LowStockProducts</strong>
-        </article>
-    </div>
+    @if (TempData["AdminError"] is string adminError && !string.IsNullOrWhiteSpace(adminError))
+    {
+        <div class="auth-form__error" style="margin-bottom:0.6rem;">@adminError</div>
+    }
 
-    <div class="admin-dashboard__grid">
+    @if (TempData["AdminSuccess"] is string adminSuccess && !string.IsNullOrWhiteSpace(adminSuccess))
+    {
+        <div class="admin-dashboard__success">@adminSuccess</div>
+    }
+
+    <nav class="admin-tabs" aria-label="Admin dashboard sections">
+        <a class="admin-tabs__link @(Model.ActiveTab == "overview" ? "is-active" : string.Empty)"
+           asp-controller="Admin"
+           asp-action="Dashboard"
+           asp-route-tab="overview">Overview</a>
+
+        <a class="admin-tabs__link @(Model.ActiveTab == "products" ? "is-active" : string.Empty)"
+           asp-controller="Admin"
+           asp-action="Dashboard"
+           asp-route-tab="products">Products</a>
+
+        <a class="admin-tabs__link @(Model.ActiveTab == "categories" ? "is-active" : string.Empty)"
+           asp-controller="Admin"
+           asp-action="Dashboard"
+           asp-route-tab="categories">Categories</a>
+
+        <a class="admin-tabs__link @(Model.ActiveTab == "orders" ? "is-active" : string.Empty)"
+           asp-controller="Admin"
+           asp-action="Dashboard"
+           asp-route-tab="orders">Orders</a>
+
+        <a class="admin-tabs__link @(Model.ActiveTab == "users" ? "is-active" : string.Empty)"
+           asp-controller="Admin"
+           asp-action="Dashboard"
+           asp-route-tab="users">Users</a>
+
+        <a class="admin-tabs__link @(Model.ActiveTab == "reports" ? "is-active" : string.Empty)"
+           asp-controller="Admin"
+           asp-action="Dashboard"
+           asp-route-tab="reports">Reports</a>
+    </nav>
+
+    @if (Model.ActiveTab == "overview")
+    {
+        <div class="admin-dashboard__kpis">
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Total Revenue</span>
+                <strong class="admin-kpi-card__value">$@Model.TotalRevenue.ToString("0.00")</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Total Orders</span>
+                <strong class="admin-kpi-card__value">@Model.TotalOrders</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Avg Order Value</span>
+                <strong class="admin-kpi-card__value">$@Model.AverageOrderValue.ToString("0.00")</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Pending Orders</span>
+                <strong class="admin-kpi-card__value">@Model.PendingOrders</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Products</span>
+                <strong class="admin-kpi-card__value">@Model.TotalProducts</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Categories</span>
+                <strong class="admin-kpi-card__value">@Model.TotalCategories</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Users</span>
+                <strong class="admin-kpi-card__value">@Model.TotalUsers</strong>
+            </article>
+            <article class="admin-kpi-card">
+                <span class="admin-kpi-card__label">Low Stock (≤5)</span>
+                <strong class="admin-kpi-card__value">@Model.LowStockProducts</strong>
+            </article>
+        </div>
+
+        <div class="admin-dashboard__grid">
+            <article class="admin-dashboard-card">
+                <header class="admin-dashboard-card__head">
+                    <h2>Revenue by Month</h2>
+                    <span class="admin-dashboard-card__sub">Last 12 months</span>
+                </header>
+                @if (Model.MonthlyRevenue.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No order data yet to render this chart.</p>
+                }
+                else
+                {
+                    <div class="admin-bars-chart" role="img" aria-label="Monthly revenue chart">
+                        @foreach (var item in Model.MonthlyRevenue)
+                        {
+                            var heightPct = maxMonthlyRevenue > 0
+                                ? Math.Max(8m, Math.Round((item.Revenue / maxMonthlyRevenue) * 100m, 0))
+                                : 0m;
+                            <div class="admin-bars-chart__col" title="@item.Year-@item.Month.ToString("00"): $@item.Revenue.ToString("0.00")">
+                                <div class="admin-bars-chart__bar" style="height:@heightPct%;"></div>
+                                <span class="admin-bars-chart__label">@item.Month.ToString("00")/@item.Year.ToString()[2..]</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </article>
+
+            <article class="admin-dashboard-card">
+                <header class="admin-dashboard-card__head">
+                    <h2>Orders by Status</h2>
+                    <span class="admin-dashboard-card__sub">@totalStatusOrders total</span>
+                </header>
+                @if (Model.OrdersByStatus.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No order status data available.</p>
+                }
+                else
+                {
+                    <div class="admin-progress-list">
+                        @foreach (var item in Model.OrdersByStatus)
+                        {
+                            var pct = totalStatusOrders > 0
+                                ? Math.Round((decimal)item.Count / totalStatusOrders * 100m, 1)
+                                : 0m;
+                            var widthPct = pct > 0 ? Math.Max(6m, pct) : 0m;
+
+                            <div class="admin-progress-list__item">
+                                <div class="admin-progress-list__meta">
+                                    <span>@item.Status</span>
+                                    <span>@item.Count (@pct.ToString("0.#")%)</span>
+                                </div>
+                                <div class="admin-progress-list__track">
+                                    <span class="admin-progress-list__fill" style="width:@widthPct%;"></span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </article>
+        </div>
+
         <article class="admin-dashboard-card">
             <header class="admin-dashboard-card__head">
-                <h2>Revenue by Month</h2>
-                <span class="admin-dashboard-card__sub">Last 12 months</span>
+                <h2>Recent Orders</h2>
+                <span class="admin-dashboard-card__sub">Last @Model.RecentOrders.Count</span>
             </header>
-            @if (Model.MonthlyRevenue.Count == 0)
+            @if (Model.RecentOrders.Count == 0)
             {
-                <p class="admin-dashboard-card__empty">No order data yet to render this chart.</p>
+                <p class="admin-dashboard-card__empty">No orders yet.</p>
             }
             else
             {
-                <div class="admin-bars-chart" role="img" aria-label="Monthly revenue chart">
-                    @foreach (var item in Model.MonthlyRevenue)
-                    {
-                        var heightPct = maxMonthlyRevenue > 0
-                            ? Math.Max(8m, Math.Round((item.Revenue / maxMonthlyRevenue) * 100m, 0))
-                            : 0m;
-                        <div class="admin-bars-chart__col" title="@item.Year-@item.Month.ToString("00"): $@item.Revenue.ToString("0.00")">
-                            <div class="admin-bars-chart__bar" style="height:@heightPct%;"></div>
-                            <span class="admin-bars-chart__label">@item.Month.ToString("00")/@item.Year.ToString()[2..]</span>
-                        </div>
-                    }
+                <div class="admin-table-wrap">
+                    <table class="admin-dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Created</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var order in Model.RecentOrders)
+                        {
+                            <tr>
+                                <td>#@order.OrderId</td>
+                                <td>@order.UserId</td>
+                                <td>@order.Status</td>
+                                <td>$@order.Total.ToString("0.00")</td>
+                                <td>@order.CreatedAtUtc.ToString("u")</td>
+                                <td>
+                                    <a class="btn-ghost"
+                                       asp-controller="Admin"
+                                       asp-action="Dashboard"
+                                       asp-route-tab="orders"
+                                       asp-route-orderId="@order.OrderId">Details</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
                 </div>
             }
         </article>
+    }
+
+    @if (Model.ActiveTab == "products")
+    {
+        <div class="admin-panel">
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">Create Product</h2>
+                <form method="post" asp-controller="Admin" asp-action="Criar" class="admin-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="activeTab" value="products" />
+
+                    <input class="auth-form__input" name="nome" placeholder="Name" required />
+                    <input class="auth-form__input" name="preco" type="number" step="0.01" min="0" placeholder="Price" required />
+                    <input class="auth-form__input" name="stock" type="number" step="1" min="0" value="100" placeholder="Stock" required />
+                    <select class="auth-form__input" name="categoria" required>
+                        <option value="">Select category</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Name">@category.Name</option>
+                        }
+                    </select>
+                    <input class="auth-form__input" name="imagemUrl" placeholder="Image URL (/catalog/...)" required />
+                    <textarea class="auth-form__input" name="descricao" placeholder="Description" required></textarea>
+                    <input class="auth-form__input" name="tamanhos" placeholder="Sizes comma separated (S,M,L)" />
+                    <label class="filters__checkbox" style="margin: 0;">
+                        <input type="checkbox" name="destaque" value="true" />
+                        <span>Featured</span>
+                    </label>
+                    <button class="btn-primary" type="submit">Create</button>
+                </form>
+            </div>
+
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">Manage Existing Products</h2>
+                @if (Model.Products.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No products found.</p>
+                }
+                else
+                {
+                    <div class="admin-products">
+                        @foreach (var product in Model.Products)
+                        {
+                            <form method="post" asp-controller="Admin" asp-action="Editar" class="admin-product-card">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="activeTab" value="products" />
+                                <input type="hidden" name="id" value="@product.Id" />
+
+                                <div class="admin-product-card__head">
+                                    <strong>#@product.Id</strong>
+                                    <button class="btn-ghost" type="submit">Save</button>
+                                </div>
+
+                                <input class="auth-form__input" name="nome" value="@product.Nome" required />
+                                <input class="auth-form__input" name="preco" type="number" step="0.01" min="0" value="@product.Preco" required />
+                                <input class="auth-form__input" name="stock" type="number" step="1" min="0" value="@product.Stock" required />
+                                <select class="auth-form__input" name="categoria" required>
+                                    @foreach (var category in categories)
+                                    {
+                                        if (string.Equals(product.Categoria, category.Name, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <option value="@category.Name" selected>@category.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@category.Name">@category.Name</option>
+                                        }
+                                    }
+                                </select>
+                                <input class="auth-form__input" name="imagemUrl" value="@product.ImagemUrl" required />
+                                <textarea class="auth-form__input" name="descricao" required>@product.Descricao</textarea>
+                                <input class="auth-form__input" name="tamanhos" value="@string.Join(",", product.Tamanhos)" />
+                                <label class="filters__checkbox" style="margin: 0;">
+                                    <input type="checkbox" name="destaque" value="true" @(product.Destaque ? "checked" : string.Empty) />
+                                    <span>Featured</span>
+                                </label>
+                            </form>
+                        }
+                    </div>
+
+                    <div style="margin-top:1rem;">
+                        @foreach (var product in Model.Products)
+                        {
+                            <form method="post" asp-controller="Admin" asp-action="Remover" style="display:inline-block; margin:0 0.5rem 0.5rem 0;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="activeTab" value="products" />
+                                <input type="hidden" name="id" value="@product.Id" />
+                                <button class="btn-outline" type="submit">Delete #@product.Id</button>
+                            </form>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.ActiveTab == "categories")
+    {
+        <div class="admin-panel">
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">Create Category</h2>
+                <form method="post" asp-controller="Admin" asp-action="CriarCategoria" class="admin-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="activeTab" value="categories" />
+                    <input class="auth-form__input" name="nome" placeholder="Category name" required />
+                    <button class="btn-primary" type="submit">Create Category</button>
+                </form>
+            </div>
+
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">Manage Categories</h2>
+                @if (categories.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No categories found.</p>
+                }
+                else
+                {
+                    <div class="admin-products">
+                        @foreach (var category in categories)
+                        {
+                            <div class="admin-product-card">
+                                <div class="admin-product-card__head">
+                                    <strong>#@category.Id · @category.ProductCount products</strong>
+                                </div>
+
+                                <form method="post" asp-controller="Admin" asp-action="EditarCategoria" class="admin-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="activeTab" value="categories" />
+                                    <input type="hidden" name="id" value="@category.Id" />
+                                    <input class="auth-form__input" name="nome" value="@category.Name" required />
+                                    <button class="btn-ghost" type="submit">Save</button>
+                                </form>
+
+                                <form method="post" asp-controller="Admin" asp-action="RemoverCategoria">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="activeTab" value="categories" />
+                                    <input type="hidden" name="id" value="@category.Id" />
+                                    <button class="btn-outline" type="submit">Delete</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.ActiveTab == "orders")
+    {
+        <div class="admin-panel">
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">Manage Orders</h2>
+                @if (Model.Orders.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No orders available.</p>
+                }
+                else
+                {
+                    <div class="admin-table-wrap">
+                        <table class="admin-dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var order in Model.Orders)
+                            {
+                                <tr>
+                                    <td>#@order.OrderId</td>
+                                    <td>@order.UserId</td>
+                                    <td>@order.Status</td>
+                                    <td>$@order.Total.ToString("0.00")</td>
+                                    <td>@order.CreatedAtUtc.ToString("u")</td>
+                                    <td>
+                                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                            <a class="btn-outline"
+                                               asp-controller="Admin"
+                                               asp-action="Dashboard"
+                                               asp-route-tab="orders"
+                                               asp-route-orderId="@order.OrderId">Details</a>
+
+                                            <form method="post" asp-controller="Admin" asp-action="UpdateOrderStatus" style="display:flex; gap:0.5rem;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="activeTab" value="orders" />
+                                                <input type="hidden" name="orderId" value="@order.OrderId" />
+                                                <select class="auth-form__input" name="newStatus" style="min-width:140px;">
+                                                    @foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
+                                                    {
+                                                        if (order.Status == status)
+                                                        {
+                                                            <option value="@status" selected>@status</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@status">@status</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <button class="btn-ghost" type="submit">Update</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+
+            @if (Model.SelectedOrder is not null)
+            {
+                <div class="admin-panel__section">
+                    <h2 class="admin-panel__title">Order Details · #@Model.SelectedOrder.Id</h2>
+
+                    <div style="margin-top:0.4rem;">
+                        <p><strong>Date:</strong> @Model.SelectedOrder.CreatedAtUtc.ToString("u")</p>
+                        <p><strong>Status:</strong> @Model.SelectedOrder.Status</p>
+                        <p><strong>Subtotal:</strong> $@Model.SelectedOrder.Subtotal.ToString("0.00")</p>
+                        <p><strong>VAT:</strong> $@Model.SelectedOrder.Vat.ToString("0.00")</p>
+                        <p><strong>Total:</strong> $@Model.SelectedOrder.Total.ToString("0.00")</p>
+                    </div>
+
+                    <div class="admin-table-wrap">
+                        <table class="admin-dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Size</th>
+                                    <th>Qty</th>
+                                    <th>Unit</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var line in Model.SelectedOrder.Lines)
+                            {
+                                <tr>
+                                    <td>@line.ProductName</td>
+                                    <td>@(string.IsNullOrWhiteSpace(line.Size) ? "-" : line.Size)</td>
+                                    <td>@line.Quantity</td>
+                                    <td>$@line.UnitPrice.ToString("0.00")</td>
+                                    <td>$@line.Subtotal.ToString("0.00")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">Order Status History</h2>
+                @if (Model.OrderHistory.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No status transitions recorded yet.</p>
+                }
+                else
+                {
+                    <div class="admin-table-wrap">
+                        <table class="admin-dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Changed At</th>
+                                    <th>Changed By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.OrderHistory)
+                            {
+                                <tr>
+                                    <td>#@item.OrderId</td>
+                                    <td>@item.FromStatus</td>
+                                    <td>@item.ToStatus</td>
+                                    <td>@item.ChangedAtUtc.ToString("u")</td>
+                                    <td>@item.ChangedBy</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.ActiveTab == "users")
+    {
+        <div class="admin-panel">
+            <div class="admin-panel__section">
+                <h2 class="admin-panel__title">User Management</h2>
+
+                <form method="get" asp-controller="Admin" asp-action="Dashboard" class="admin-form" style="margin-bottom:0.8rem;">
+                    <input type="hidden" name="tab" value="users" />
+                    <input class="auth-form__input" name="userSearch" value="@Model.UserSearch" placeholder="Search by username or email" />
+                    <button class="btn-outline" type="submit">Search</button>
+                </form>
+
+                @if (Model.Users.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No users found for the current search.</p>
+                }
+                else
+                {
+                    <div class="admin-table-wrap">
+                        <table class="admin-dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td>@user.Username</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.Role</td>
+                                    <td>@(user.IsActive ? "Active" : "Inactive")</td>
+                                    <td>
+                                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                            <form method="post" asp-controller="Admin" asp-action="UpdateUserRole" style="display:flex; gap:0.5rem;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="activeTab" value="users" />
+                                                <input type="hidden" name="userSearch" value="@Model.UserSearch" />
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <select class="auth-form__input" name="role" style="min-width:140px;">
+                                                    @if (string.Equals(user.Role, "Admin", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        <option value="Admin" selected>Admin</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="Admin">Admin</option>
+                                                    }
+
+                                                    @if (string.Equals(user.Role, "Customer", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        <option value="Customer" selected>Customer</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="Customer">Customer</option>
+                                                    }
+                                                </select>
+                                                <button class="btn-ghost" type="submit">Save Role</button>
+                                            </form>
+
+                                            <form method="post" asp-controller="Admin" asp-action="ToggleUserActive">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="activeTab" value="users" />
+                                                <input type="hidden" name="userSearch" value="@Model.UserSearch" />
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <input type="hidden" name="activate" value="@(!user.IsActive)" />
+                                                <button class="btn-outline" type="submit">
+                                                    @(user.IsActive ? "Deactivate" : "Activate")
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.ActiveTab == "reports")
+    {
+        <div class="admin-dashboard__grid">
+            <article class="admin-dashboard-card">
+                <header class="admin-dashboard-card__head">
+                    <h2>Top Selling Products</h2>
+                    <span class="admin-dashboard-card__sub">Units sold</span>
+                </header>
+                @if (Model.TopProducts.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No sales recorded yet.</p>
+                }
+                else
+                {
+                    <div class="admin-progress-list">
+                        @foreach (var item in Model.TopProducts)
+                        {
+                            var pct = maxTopProductQty > 0
+                                ? Math.Round((decimal)item.QuantitySold / maxTopProductQty * 100m, 1)
+                                : 0m;
+                            var widthPct = pct > 0 ? Math.Max(8m, pct) : 0m;
+
+                            <div class="admin-progress-list__item">
+                                <div class="admin-progress-list__meta">
+                                    <span>@item.ProductName</span>
+                                    <span>@item.QuantitySold</span>
+                                </div>
+                                <div class="admin-progress-list__track">
+                                    <span class="admin-progress-list__fill admin-progress-list__fill--alt" style="width:@widthPct%;"></span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </article>
+
+            <article class="admin-dashboard-card">
+                <header class="admin-dashboard-card__head">
+                    <h2>Revenue by Month</h2>
+                    <span class="admin-dashboard-card__sub">Last 12 months</span>
+                </header>
+                @if (Model.MonthlyRevenue.Count == 0)
+                {
+                    <p class="admin-dashboard-card__empty">No order data yet to render this chart.</p>
+                }
+                else
+                {
+                    <div class="admin-bars-chart" role="img" aria-label="Monthly revenue chart">
+                        @foreach (var item in Model.MonthlyRevenue)
+                        {
+                            var heightPct = maxMonthlyRevenue > 0
+                                ? Math.Max(8m, Math.Round((item.Revenue / maxMonthlyRevenue) * 100m, 0))
+                                : 0m;
+                            <div class="admin-bars-chart__col" title="@item.Year-@item.Month.ToString("00"): $@item.Revenue.ToString("0.00")">
+                                <div class="admin-bars-chart__bar" style="height:@heightPct%;"></div>
+                                <span class="admin-bars-chart__label">@item.Month.ToString("00")/@item.Year.ToString()[2..]</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </article>
+        </div>
 
         <article class="admin-dashboard-card">
             <header class="admin-dashboard-card__head">
@@ -108,92 +679,5 @@
                 </div>
             }
         </article>
-
-        <article class="admin-dashboard-card">
-            <header class="admin-dashboard-card__head">
-                <h2>Top Selling Products</h2>
-                <span class="admin-dashboard-card__sub">Units sold</span>
-            </header>
-            @if (Model.TopProducts.Count == 0)
-            {
-                <p class="admin-dashboard-card__empty">No sales recorded yet.</p>
-            }
-            else
-            {
-                <div class="admin-progress-list">
-                    @foreach (var item in Model.TopProducts)
-                    {
-                        var pct = maxTopProductQty > 0
-                            ? Math.Round((decimal)item.QuantitySold / maxTopProductQty * 100m, 1)
-                            : 0m;
-                        var widthPct = pct > 0 ? Math.Max(8m, pct) : 0m;
-
-                        <div class="admin-progress-list__item">
-                            <div class="admin-progress-list__meta">
-                                <span>@item.ProductName</span>
-                                <span>@item.QuantitySold</span>
-                            </div>
-                            <div class="admin-progress-list__track">
-                                <span class="admin-progress-list__fill admin-progress-list__fill--alt" style="width:@widthPct%;"></span>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-        </article>
-
-        <article class="admin-dashboard-card">
-            <header class="admin-dashboard-card__head">
-                <h2>Quick Management</h2>
-            </header>
-            <div class="admin-dashboard-links">
-                <a class="btn-outline" asp-controller="Admin" asp-action="Produtos">Manage Products & Categories</a>
-                <a class="btn-outline" asp-controller="OrdersAdmin" asp-action="Index">Manage Orders</a>
-                <a class="btn-outline" asp-controller="OrdersAdmin" asp-action="History">Order Status History</a>
-                <a class="btn-outline" asp-controller="Reports" asp-action="Index">Open Reports</a>
-            </div>
-        </article>
-    </div>
-
-    <article class="admin-dashboard-card">
-        <header class="admin-dashboard-card__head">
-            <h2>Recent Orders</h2>
-        </header>
-        @if (Model.RecentOrders.Count == 0)
-        {
-            <p class="admin-dashboard-card__empty">No orders yet.</p>
-        }
-        else
-        {
-            <div class="admin-table-wrap">
-                <table class="admin-dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Order</th>
-                            <th>User</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                            <th>Created</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var order in Model.RecentOrders)
-                    {
-                        <tr>
-                            <td>#@order.OrderId</td>
-                            <td>@order.UserId</td>
-                            <td>@order.Status</td>
-                            <td>$@order.Total.ToString("0.00")</td>
-                            <td>@order.CreatedAtUtc.ToString("u")</td>
-                            <td>
-                                <a class="btn-ghost" asp-controller="OrdersAdmin" asp-action="Detalhes" asp-route-id="@order.OrderId">Details</a>
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </article>
+    }
 </section>

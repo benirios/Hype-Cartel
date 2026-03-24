@@ -11,34 +11,10 @@
             "id": "9ecc003ded8fcdaf",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Context.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Context"
-            }
-          }
-        ]
-      },
-      {
-        "id": "74daac3450bc9a73",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "113c62e9a26d0699",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "steps.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "steps"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Visualização de diagrama de grafo"
             }
           }
         ]
@@ -98,7 +74,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 248.5
+    "width": 200
   },
   "right": {
     "id": "73d3a0dfb8df67e0",
@@ -205,26 +181,43 @@
   },
   "active": "9ecc003ded8fcdaf",
   "lastOpenFiles": [
-    "steps.md",
-    "pdfs.md",
-    "resume_instructions.md",
-    "points.md",
-    "Context.md",
-    "full_history.md",
-    "memory_index.md",
-    "context/ref-LiquidNavBar.png",
-    "context/ref-LiquidShopNow.png",
-    "context/users.json",
-    "context/ref1.png",
-    "context",
-    "README.md",
-    "PROJECT_CONTEXT.md",
+    "matriz_riscos_dependencias.md",
+    "gaps_producao_readiness.md",
+    "Files/UFCD10792-FP2-Ficha_Prática-Aula2-ModelBinding.pdf",
+    "Files/UFCD10792-FP3-Ficha_Prática-Aula3-ExemploComBaseDados.pdf",
     "Files/UFCD10792-TFinal-Enunciado_Oficial_Loja_Online.pdf",
     "Files/UFCD10792-TFinal-Requisitos_Tecnicos_Loja_Online.pdf",
     "Files/UFCD10792-TFinal-Rubrica_Avaliacao_Quantitativa_Loja_Online.pdf",
     "Files/UFCD10792-FP1-FichaPrática-Aula1-ASP.NET_Core_MVC.pdf",
-    "Files/UFCD10792-FP2-Ficha_Prática-Aula2-ModelBinding.pdf",
-    "Files/UFCD10792-FP3-Ficha_Prática-Aula3-ExemploComBaseDados.pdf",
+    "adrs_decisoes_tecnicas.md",
+    "context/ref1.png",
+    "context/ref-LiquidShopNow.png",
+    "context/ref-LiquidNavBar.png",
+    "runbook_deploy.md",
+    "memory_index.md",
+    "matriz_testes_e2e.md",
+    "runbook_incidentes.md",
+    "backlog_priorizado.md",
+    "inventario_stock_operacao.md",
+    "kpis_dashboard_negocio.md",
+    "gestao_segredos_e_chaves.md",
+    "points.md",
+    "README.md",
+    "roadmap_produto.md",
+    "schema_sql_er.md",
+    "seguranca_owasp_checklist.md",
+    "plano_marketing_conteudo.md",
+    "plano_conversao_cro.md",
+    "plano_seo_ecommerce.md",
+    "plano_releases.md",
+    "qa_checklist_funcional.md",
+    "atendimento_pos_venda.md",
+    "logistica_envio_devolucao.md",
+    "checkout_pagamentos_estrategia.md",
+    "catalogo_modelo_comercial.md",
+    "privacidade_lgpd_gdpr.md",
+    "context/users.json",
+    "context",
     "Files"
   ]
 }

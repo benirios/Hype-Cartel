@@ -40,8 +40,6 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <a class="navbar__link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
-                    <a class="navbar__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
-                    <a class="navbar__link" asp-controller="Reports" asp-action="Index">Reports</a>
                 }
             </div>
         </div>
@@ -102,8 +100,6 @@
         @if (User.IsInRole("Admin"))
         {
             <a class="mobile-menu__link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
-            <a class="mobile-menu__link" asp-controller="Admin" asp-action="Produtos">Admin</a>
-            <a class="mobile-menu__link" asp-controller="Reports" asp-action="Index">Reports</a>
         }
         @if (User.Identity?.IsAuthenticated == true)
         {

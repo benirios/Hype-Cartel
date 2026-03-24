@@ -2256,6 +2256,46 @@ small {
     gap: 1.1rem;
 }
 
+.admin-dashboard__success {
+    border: 1px solid rgba(146, 190, 154, 0.45);
+    background: rgba(48, 78, 55, 0.42);
+    color: #ddf4e2;
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.8rem;
+    font-size: 0.86rem;
+}
+
+.admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.admin-tabs__link {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--glass-border);
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.67rem;
+    padding: 0.48rem 0.66rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+
+.admin-tabs__link:hover {
+    color: var(--color-white);
+    border-color: rgba(237, 241, 246, 0.28);
+}
+
+.admin-tabs__link.is-active {
+    color: var(--color-white);
+    background: rgba(207, 215, 225, 0.16);
+    border-color: rgba(237, 241, 246, 0.34);
+}
+
 .admin-dashboard__kpis {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));

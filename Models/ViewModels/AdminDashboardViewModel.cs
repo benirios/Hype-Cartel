@@ -12,10 +12,20 @@ public sealed class AdminDashboardViewModel
 
     public decimal AverageOrderValue => TotalOrders == 0 ? 0m : TotalRevenue / TotalOrders;
 
+    public string ActiveTab { get; set; } = "overview";
+    public string UserSearch { get; set; } = string.Empty;
+    public string CurrentUserId { get; set; } = string.Empty;
+
     public List<DashboardMonthlyRevenueItem> MonthlyRevenue { get; set; } = new();
     public List<DashboardOrderStatusItem> OrdersByStatus { get; set; } = new();
     public List<DashboardTopProductItem> TopProducts { get; set; } = new();
     public List<DashboardRecentOrderItem> RecentOrders { get; set; } = new();
+    public List<ProdutoViewModel> Products { get; set; } = new();
+    public List<DashboardCategoryManageItem> Categories { get; set; } = new();
+    public List<OrderManageItem> Orders { get; set; } = new();
+    public List<OrderHistoryItem> OrderHistory { get; set; } = new();
+    public List<DashboardUserManageItem> Users { get; set; } = new();
+    public UserOrderViewModel? SelectedOrder { get; set; }
 }
 
 public sealed class DashboardMonthlyRevenueItem
@@ -46,4 +56,22 @@ public sealed class DashboardRecentOrderItem
     public string Status { get; set; } = string.Empty;
     public decimal Total { get; set; }
     public DateTime CreatedAtUtc { get; set; }
+}
+
+public sealed class DashboardCategoryManageItem
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public int ProductCount { get; set; }
+}
+
+public sealed class DashboardUserManageItem
+{
+    public string Id { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Role { get; set; } = "Customer";
+    public bool IsActive { get; set; }
+    public DateTimeOffset? LockoutEnd { get; set; }
 }

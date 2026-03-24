@@ -91,7 +91,7 @@ public sealed class ProductCatalogEfStore : IProductCatalogService
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList(),
                 JsonOptions),
-            Stock = 100,
+            Stock = produto.Stock,
             Highlight = produto.Destaque,
             CategoryId = category.Id
         };
@@ -129,6 +129,7 @@ public sealed class ProductCatalogEfStore : IProductCatalogService
         existing.Price = produto.Preco;
         existing.Description = produto.Descricao.Trim();
         existing.ImageUrl = NormalizeAssetPath(produto.ImagemUrl);
+        existing.Stock = produto.Stock;
         existing.Highlight = produto.Destaque;
         existing.SizesJson = JsonSerializer.Serialize(
             produto.Tamanhos
@@ -197,6 +198,7 @@ public sealed class ProductCatalogEfStore : IProductCatalogService
             Nome = product.Name,
             Slug = product.Slug,
             Preco = product.Price,
+            Stock = product.Stock,
             ImagemUrl = NormalizeAssetPath(product.ImageUrl),
             Categoria = product.Category?.Name ?? "Uncategorized",
             Descricao = product.Description,
@@ -223,6 +225,12 @@ public sealed class ProductCatalogEfStore : IProductCatalogService
         if (produto.Preco < 0)
         {
             error = "Product price cannot be negative.";
+            return false;
+        }
+
+        if (produto.Stock < 0)
+        {
+            error = "Product stock cannot be negative.";
             return false;
         }
 

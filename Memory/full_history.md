@@ -147,4 +147,188 @@ Contact points in the code (where to change for common tasks)
 - Requested UI modernization and dashboard centralization were delivered.
 - Existing admin/report/order pages remain intact and linked from the new dashboard.
 
+---
+
+## [2026-03-24] PLAN mode - unified admin dashboard phase planning
+
+### Scope analyzed
+- Reviewed `Memory/` vault contents (`Context.md`, `pdfs.md`, `steps.md`, `points.md`, `full_history.md`) and current admin/report/order controllers/views.
+- Revalidated baseline build/test status to anchor plan on real project state.
+- Cross-checked requirements from final-project PDFs against current implementation and the new request.
+
+### Baseline verification snapshot
+- `dotnet build ./MafiaStore.csproj` ✅
+- `dotnet test ./MafiaStore.csproj` ✅
+- `dotnet test ./Hype-Cartel.sln` ⚠️ fails because `Tests/IntegrationTests/IntegrationTests.csproj` is referenced but missing on disk.
+
+### Requirement clarification results (confirmed with user)
+- Prioritize **unified dashboard implementation first**; SQL Server migration stays for later phase.
+- User management in this phase:
+  - list + search users
+  - change role (Admin/Customer)
+  - activate/deactivate accounts
+- Replace old admin pages in this phase (not compatibility redirects).
+- Stock strategy for this phase: **global stock per product**.
+
+### Planning outcome
+- Created implementation plan file at:
+  - `/home/guts/.copilot/session-state/0ce62cc5-cf0d-422f-b1b2-81e56863b7b5/plan.md`
+- Plan focuses on:
+  - consolidating Admin/Reports/Orders into one management dashboard
+  - exposing full product price/stock/category management in-dashboard
+  - embedding order and report management in-dashboard
+  - adding user role and activation controls
+  - preserving role security, server-side validation, SQL persistence, and current UI aesthetic
+  - recovering full solution-level validation path (missing integration test project reference issue)
+
+---
+
+## [2026-03-24] Unified admin dashboard implementation (phase 1)
+
+### Implemented
+- Reworked admin architecture to centralize management into `AdminController.Dashboard` with section tabs:
+  - overview, products, categories, orders, users, reports.
+
+- Products management in dashboard:
+  - create/edit/delete directly in dashboard tab.
+  - added editable `Stock` in admin forms.
+  - persisted stock in EF-backed service (`ProductCatalogEfStore`) and kept JSON-backed service compatibility (`ProductCatalogService`) aligned with the new `ProdutoViewModel.Stock`.
+
+- Categories management in dashboard:
+  - create/edit/delete integrated in dashboard.
+  - product count shown per category.
+
+- Orders management in dashboard:
+  - order list + detail view in same dashboard flow.
+  - status updates with validated transitions.
+  - stock replenishment preserved on paid/shipped -> cancelled transitions.
+  - status history rendered in dashboard.
+
+- Users management in dashboard:
+  - list + search by username/email.
+  - role switch (`Admin`/`Customer`) with safeguards:
+    - prevents removing admin role from the last admin.
+  - activate/deactivate using lockout with safeguards:
+    - prevents deactivating own account.
+    - prevents deactivating last admin account.
+
+- Reports in dashboard:
+  - top products, monthly revenue, order-status distribution now shown as dashboard report section.
+
+- Legacy admin flows replaced:
+  - `ReportsController` and `OrdersAdminController` changed to dashboard redirects.
+  - `AdminController.Produtos` now redirects to dashboard products tab.
+  - removed legacy admin/report/order Razor views and kept dashboard as single backoffice UI.
+  - navbar admin links simplified to dashboard entry.
+  - admin login redirect changed to `Admin/Dashboard`.
+
+- Solution baseline fix:
+  - removed stale missing `Tests/IntegrationTests/IntegrationTests.csproj` entry from `Hype-Cartel.sln` to restore solution-level test execution.
+
+### Validation
+- `dotnet build ./MafiaStore.csproj` ✅
+- `dotnet test ./MafiaStore.csproj` ✅
+- `dotnet test ./Hype-Cartel.sln` ✅
+
+---
+
+## [2026-03-24] Dashboard hotfix - SQLite decimal SUM crash
+
+### Issue reported
+- `Admin/Dashboard` was throwing:
+  - `NotSupportedException: SQLite cannot apply aggregate operator 'Sum' on expressions of type 'decimal'`
+- Stack trace pointed to `AdminController.Dashboard` revenue aggregation line.
+
+### Root cause
+- EF Core SQLite provider does not translate SQL `SUM` for `decimal` expressions in this context.
+- Dashboard still had decimal-based aggregate expressions for order revenue.
+
+### Fix applied
+- `Controllers/AdminController.cs`:
+  - `totalRevenue` aggregation changed to `double?` sum in SQL:
+    - `SumAsync(o => (double?)o.Total) ?? 0d`
+    - converted back to rounded `decimal` in application layer for display.
+  - grouped monthly revenue aggregation changed to:
+    - `Revenue = g.Sum(x => (double?)x.Total) ?? 0d`
+    - mapped back to rounded `decimal` in view model projection.
+  - monthly revenue ordering corrected to true "last 12 months":
+    - order descending to take newest 12,
+    - then reorder ascending for chart rendering.
+
+### Validation
+- `dotnet build ./MafiaStore.csproj` ✅
+- `dotnet test ./MafiaStore.csproj` ✅
+- `dotnet test ./Hype-Cartel.sln` ✅
+- Runtime smoke check:
+  - login page reachable,
+  - admin authentication flow executed,
+  - `GET /Admin/Dashboard` returned `200`,
+  - response did not contain the previous SQLite SUM exception text.
+
 End of full history.
+
+---
+
+## [2026-03-24] Obsidian-only expansion (no application code changes)
+
+### Scope requested
+- User requested a full repository analysis and comprehensive planning expansion in Obsidian (`Memory/`).
+- Explicit constraint: do not modify application code; only improve knowledge/planning docs in Memory.
+
+### Execution summary
+- Created and populated a complete planning/documentation structure in `Memory/`, covering:
+  - strategy and product roadmap,
+  - architecture and data model notes,
+  - security/compliance checklists,
+  - ecommerce operations (stock, payment, logistics, post-sales),
+  - QA/release/runbooks,
+  - growth/SEO/CRO/KPI planning.
+- Added transversal analysis docs:
+  - `Memory/gaps_producao_readiness.md`
+  - `Memory/matriz_riscos_dependencias.md`
+- Updated `Memory/memory_index.md` as central navigation hub with full backlinks taxonomy.
+
+### External references used in planning
+- Google Search ecommerce docs:
+  - https://developers.google.com/search/docs/specialty/ecommerce
+- Google SEO Starter Guide:
+  - https://developers.google.com/search/docs/fundamentals/seo-starter-guide
+- Stripe Checkout docs:
+  - https://stripe.com/docs/payments/checkout
+- OWASP Top 10:
+  - https://owasp.org/www-project-top-ten/
+
+### Files populated in this phase
+- `Memory/roadmap_produto.md`
+- `Memory/personas_e_jornadas.md`
+- `Memory/backlog_priorizado.md`
+- `Memory/matriz_requisitos_rastreabilidade.md`
+- `Memory/arquitetura_componentes.md`
+- `Memory/schema_sql_er.md`
+- `Memory/fluxos_criticos_negocio.md`
+- `Memory/adrs_decisoes_tecnicas.md`
+- `Memory/seguranca_owasp_checklist.md`
+- `Memory/autenticacao_autorizacao_politicas.md`
+- `Memory/privacidade_lgpd_gdpr.md`
+- `Memory/gestao_segredos_e_chaves.md`
+- `Memory/catalogo_modelo_comercial.md`
+- `Memory/inventario_stock_operacao.md`
+- `Memory/checkout_pagamentos_estrategia.md`
+- `Memory/logistica_envio_devolucao.md`
+- `Memory/atendimento_pos_venda.md`
+- `Memory/qa_checklist_funcional.md`
+- `Memory/matriz_testes_e2e.md`
+- `Memory/plano_releases.md`
+- `Memory/runbook_deploy.md`
+- `Memory/runbook_incidentes.md`
+- `Memory/plano_seo_ecommerce.md`
+- `Memory/kpis_dashboard_negocio.md`
+- `Memory/plano_conversao_cro.md`
+- `Memory/plano_marketing_conteudo.md`
+- `Memory/gaps_producao_readiness.md` (new)
+- `Memory/matriz_riscos_dependencias.md` (new)
+- `Memory/memory_index.md` (expanded navigation)
+- `Memory/points.md` (progress note)
+
+### Constraint compliance
+- No edits were made to application code (`Controllers/`, `Services/`, `Models/`, `Views/`, `Program.cs`, etc.) in this documentation-only phase.
