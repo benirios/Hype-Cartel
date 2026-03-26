@@ -206,16 +206,16 @@
         <!-- Create New Product Modal Trigger -->
         <div class="admin-section-header">
             <h2 class="admin-section-title">Products Management</h2>
-            <button class="btn-primary" onclick="toggleCreateModal()">+ Create Product</button>
+            <button class="btn-primary" type="button" onclick="toggleCreateModal(true)">+ Create Product</button>
         </div>
 
         <!-- Create Product Modal -->
         <div id="createProductModal" class="admin-modal" style="display:none;">
-            <div class="admin-modal__overlay" onclick="toggleCreateModal()"></div>
+            <div class="admin-modal__overlay" onclick="toggleCreateModal(false)"></div>
             <div class="admin-modal__content">
                 <div class="admin-modal__header">
                     <h3>Create New Product</h3>
-                    <button class="admin-modal__close" onclick="toggleCreateModal()">&times;</button>
+                    <button class="admin-modal__close" type="button" onclick="toggleCreateModal(false)">&times;</button>
                 </div>
                 <form method="post" asp-controller="Admin" asp-action="Criar" class="admin-modal__form">
                     @Html.AntiForgeryToken()
@@ -269,7 +269,7 @@
                     </label>
 
                     <div class="admin-modal__actions">
-                        <button class="btn-outline" type="button" onclick="toggleCreateModal()">Cancel</button>
+                        <button class="btn-outline" type="button" onclick="toggleCreateModal(false)">Cancel</button>
                         <button class="btn-primary" type="submit">Create Product</button>
                     </div>
                 </form>
@@ -306,7 +306,7 @@
                             <p class="admin-product-item__category">@product.Categoria</p>
                         </div>
                         <div class="admin-product-item__actions">
-                            <button class="btn-ghost" onclick="toggleEditModal(@product.Id)">Edit</button>
+                            <button class="btn-ghost" type="button" onclick="toggleEditModal(@product.Id, true)">Edit</button>
                             <form method="post" asp-controller="Admin" asp-action="Remover" style="display:inline;">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="activeTab" value="products" />
@@ -315,80 +315,81 @@
                             </form>
                         </div>
 
-                        <!-- Edit Modal for this product -->
-                        <div id="editProductModal@(product.Id)" class="admin-modal" style="display:none;">
-                            <div class="admin-modal__overlay" onclick="toggleEditModal(@product.Id)"></div>
-                            <div class="admin-modal__content">
-                                <div class="admin-modal__header">
-                                    <h3>Edit Product #@product.Id</h3>
-                                    <button class="admin-modal__close" onclick="toggleEditModal(@product.Id)">&times;</button>
-                                </div>
-                                <form method="post" asp-controller="Admin" asp-action="Editar" class="admin-modal__form">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="activeTab" value="products" />
-                                    <input type="hidden" name="id" value="@product.Id" />
-                                    
-                                    <div class="admin-form-group">
-                                        <label>Product Name</label>
-                                        <input class="admin-input" name="nome" value="@product.Nome" required />
-                                    </div>
-                                    
-                                    <div class="admin-form-row">
-                                        <div class="admin-form-group">
-                                            <label>Price</label>
-                                            <input class="admin-input" name="preco" type="number" step="0.01" min="0" value="@product.Preco" required />
-                                        </div>
-                                        <div class="admin-form-group">
-                                            <label>Stock</label>
-                                            <input class="admin-input" name="stock" type="number" step="1" min="0" value="@product.Stock" required />
-                                        </div>
-                                    </div>
-
-                                    <div class="admin-form-group">
-                                        <label>Category</label>
-                                        <select class="admin-input" name="categoria" required>
-                                            @foreach (var category in categories)
-                                            {
-                                                if (string.Equals(product.Categoria, category.Name, StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    <option value="@category.Name" selected>@category.Name</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="@category.Name">@category.Name</option>
-                                                }
-                                            }
-                                        </select>
-                                    </div>
-
-                                    <div class="admin-form-group">
-                                        <label>Image URL</label>
-                                        <input class="admin-input" name="imagemUrl" value="@product.ImagemUrl" required />
-                                    </div>
-
-                                    <div class="admin-form-group">
-                                        <label>Description</label>
-                                        <textarea class="admin-input" name="descricao" rows="4" required>@product.Descricao</textarea>
-                                    </div>
-
-                                    <div class="admin-form-group">
-                                        <label>Sizes (comma separated)</label>
-                                        <input class="admin-input" name="tamanhos" value="@string.Join(",", product.Tamanhos)" />
-                                    </div>
-
-                                    <label class="admin-checkbox">
-                                        <input type="checkbox" name="destaque" value="true" @(product.Destaque ? "checked" : string.Empty) />
-                                        <span>Feature this product on homepage</span>
-                                    </label>
-
-                                    <div class="admin-modal__actions">
-                                        <button class="btn-outline" type="button" onclick="toggleEditModal(@product.Id)">Cancel</button>
-                                        <button class="btn-primary" type="submit">Save Changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </article>
+
+                    <!-- Edit Modal for this product -->
+                    <div id="editProductModal@(product.Id)" class="admin-modal" style="display:none;">
+                        <div class="admin-modal__overlay" onclick="toggleEditModal(@product.Id, false)"></div>
+                        <div class="admin-modal__content">
+                            <div class="admin-modal__header">
+                                <h3>Edit Product #@product.Id</h3>
+                                <button class="admin-modal__close" type="button" onclick="toggleEditModal(@product.Id, false)">&times;</button>
+                            </div>
+                            <form method="post" asp-controller="Admin" asp-action="Editar" class="admin-modal__form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="activeTab" value="products" />
+                                <input type="hidden" name="id" value="@product.Id" />
+                                
+                                <div class="admin-form-group">
+                                    <label>Product Name</label>
+                                    <input class="admin-input" name="nome" value="@product.Nome" required />
+                                </div>
+                                
+                                <div class="admin-form-row">
+                                    <div class="admin-form-group">
+                                        <label>Price</label>
+                                        <input class="admin-input" name="preco" type="number" step="0.01" min="0" value="@product.Preco" required />
+                                    </div>
+                                    <div class="admin-form-group">
+                                        <label>Stock</label>
+                                        <input class="admin-input" name="stock" type="number" step="1" min="0" value="@product.Stock" required />
+                                    </div>
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label>Category</label>
+                                    <select class="admin-input" name="categoria" required>
+                                        @foreach (var category in categories)
+                                        {
+                                            if (string.Equals(product.Categoria, category.Name, StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <option value="@category.Name" selected>@category.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@category.Name">@category.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label>Image URL</label>
+                                    <input class="admin-input" name="imagemUrl" value="@product.ImagemUrl" required />
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label>Description</label>
+                                    <textarea class="admin-input" name="descricao" rows="4" required>@product.Descricao</textarea>
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label>Sizes (comma separated)</label>
+                                    <input class="admin-input" name="tamanhos" value="@string.Join(",", product.Tamanhos)" />
+                                </div>
+
+                                <label class="admin-checkbox">
+                                    <input type="checkbox" name="destaque" value="true" @(product.Destaque ? "checked" : string.Empty) />
+                                    <span>Feature this product on homepage</span>
+                                </label>
+
+                                <div class="admin-modal__actions">
+                                    <button class="btn-outline" type="button" onclick="toggleEditModal(@product.Id, false)">Cancel</button>
+                                    <button class="btn-primary" type="submit">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 }
             </div>
         }
@@ -398,16 +399,16 @@
     {
         <div class="admin-section-header">
             <h2 class="admin-section-title">Categories Management</h2>
-            <button class="btn-primary" onclick="toggleCategoryModal()">+ Create Category</button>
+            <button class="btn-primary" type="button" onclick="toggleCategoryModal(true)">+ Create Category</button>
         </div>
 
         <!-- Create Category Modal -->
         <div id="createCategoryModal" class="admin-modal" style="display:none;">
-            <div class="admin-modal__overlay" onclick="toggleCategoryModal()"></div>
+            <div class="admin-modal__overlay" onclick="toggleCategoryModal(false)"></div>
             <div class="admin-modal__content admin-modal__content--small">
                 <div class="admin-modal__header">
                     <h3>Create New Category</h3>
-                    <button class="admin-modal__close" onclick="toggleCategoryModal()">&times;</button>
+                    <button class="admin-modal__close" type="button" onclick="toggleCategoryModal(false)">&times;</button>
                 </div>
                 <form method="post" asp-controller="Admin" asp-action="CriarCategoria" class="admin-modal__form">
                     @Html.AntiForgeryToken()
@@ -419,7 +420,7 @@
                     </div>
 
                     <div class="admin-modal__actions">
-                        <button class="btn-outline" type="button" onclick="toggleCategoryModal()">Cancel</button>
+                        <button class="btn-outline" type="button" onclick="toggleCategoryModal(false)">Cancel</button>
                         <button class="btn-primary" type="submit">Create Category</button>
                     </div>
                 </form>
@@ -441,7 +442,7 @@
                             <p class="admin-category-item__count">@category.ProductCount products</p>
                         </div>
                         <div class="admin-category-item__actions">
-                            <button class="btn-ghost" onclick="toggleEditCategoryModal(@category.Id)">Edit</button>
+                            <button class="btn-ghost" type="button" onclick="toggleEditCategoryModal(@category.Id, true)">Edit</button>
                             <form method="post" asp-controller="Admin" asp-action="RemoverCategoria" style="display:inline;">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="activeTab" value="categories" />
@@ -452,11 +453,11 @@
 
                         <!-- Edit Category Modal -->
                         <div id="editCategoryModal@(category.Id)" class="admin-modal" style="display:none;">
-                            <div class="admin-modal__overlay" onclick="toggleEditCategoryModal(@category.Id)"></div>
+                            <div class="admin-modal__overlay" onclick="toggleEditCategoryModal(@category.Id, false)"></div>
                             <div class="admin-modal__content admin-modal__content--small">
                                 <div class="admin-modal__header">
                                     <h3>Edit Category #@category.Id</h3>
-                                    <button class="admin-modal__close" onclick="toggleEditCategoryModal(@category.Id)">&times;</button>
+                                    <button class="admin-modal__close" type="button" onclick="toggleEditCategoryModal(@category.Id, false)">&times;</button>
                                 </div>
                                 <form method="post" asp-controller="Admin" asp-action="EditarCategoria" class="admin-modal__form">
                                     @Html.AntiForgeryToken()
@@ -469,7 +470,7 @@
                                     </div>
 
                                     <div class="admin-modal__actions">
-                                        <button class="btn-outline" type="button" onclick="toggleEditCategoryModal(@category.Id)">Cancel</button>
+                                        <button class="btn-outline" type="button" onclick="toggleEditCategoryModal(@category.Id, false)">Cancel</button>
                                         <button class="btn-primary" type="submit">Save Changes</button>
                                     </div>
                                 </form>
@@ -988,23 +989,59 @@
         }
     }
 
-    function toggleCreateModal() {
+    function toggleCreateModal(forceOpen) {
         const modal = document.getElementById('createProductModal');
+        if (!modal) {
+            return;
+        }
+
+        if (typeof forceOpen === 'boolean') {
+            modal.style.display = forceOpen ? 'flex' : 'none';
+            return;
+        }
+
         modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
     }
 
-    function toggleEditModal(productId) {
+    function toggleEditModal(productId, forceOpen) {
         const modal = document.getElementById('editProductModal' + productId);
+        if (!modal) {
+            return;
+        }
+
+        if (typeof forceOpen === 'boolean') {
+            modal.style.display = forceOpen ? 'flex' : 'none';
+            return;
+        }
+
         modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
     }
 
-    function toggleCategoryModal() {
+    function toggleCategoryModal(forceOpen) {
         const modal = document.getElementById('createCategoryModal');
+        if (!modal) {
+            return;
+        }
+
+        if (typeof forceOpen === 'boolean') {
+            modal.style.display = forceOpen ? 'flex' : 'none';
+            return;
+        }
+
         modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
     }
 
-    function toggleEditCategoryModal(categoryId) {
+    function toggleEditCategoryModal(categoryId, forceOpen) {
         const modal = document.getElementById('editCategoryModal' + categoryId);
+        if (!modal) {
+            return;
+        }
+
+        if (typeof forceOpen === 'boolean') {
+            modal.style.display = forceOpen ? 'flex' : 'none';
+            return;
+        }
+
         modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
     }
 
