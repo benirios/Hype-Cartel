@@ -1,20 +1,20 @@
 {
   "main": {
-    "id": "b23570f326f25c7f",
+    "id": "98671ba1d2220b86",
     "type": "split",
     "children": [
       {
-        "id": "a6d6d2dc9b552edf",
+        "id": "8c056f7240c329c0",
         "type": "tabs",
         "children": [
           {
-            "id": "9ecc003ded8fcdaf",
+            "id": "93963271ad19bfc9",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -23,15 +23,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "49cd61e1fe96d799",
+    "id": "9d3a2296f264807e",
     "type": "split",
     "children": [
       {
-        "id": "db9a432dc19fb3d8",
+        "id": "b1c112ae6c0c7daf",
         "type": "tabs",
         "children": [
           {
-            "id": "a1ef8a14438f879e",
+            "id": "31bc11d2665a085d",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -44,7 +44,7 @@
             }
           },
           {
-            "id": "c982af04de00c1f7",
+            "id": "3da78ce31a0a0d5e",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -61,7 +61,7 @@
             }
           },
           {
-            "id": "27146fd08eef42aa",
+            "id": "4688a09070a9d3ec",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -74,23 +74,22 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 300
   },
   "right": {
-    "id": "73d3a0dfb8df67e0",
+    "id": "94c90633571b2a55",
     "type": "split",
     "children": [
       {
-        "id": "ac0f3915f480ce6a",
+        "id": "305070032ba6c622",
         "type": "tabs",
         "children": [
           {
-            "id": "18926c47fb0221ec",
+            "id": "5ab8d360270a9ee8",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "full_history.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,25 +99,24 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for full_history"
+              "title": "Backlinks"
             }
           },
           {
-            "id": "dff128deb040ef63",
+            "id": "c607dd0074f2734f",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "full_history.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from full_history"
+              "title": "Outgoing links"
             }
           },
           {
-            "id": "7b87fb66e35471cb",
+            "id": "a822907301200efb",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -133,7 +131,7 @@
             }
           },
           {
-            "id": "56c3dca40749c8fb",
+            "id": "c7b5e535fac5302e",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -147,18 +145,17 @@
             }
           },
           {
-            "id": "4d9abdc38d50e586",
+            "id": "6c17534321617085",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "full_history.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of full_history"
+              "title": "Outline"
             }
           }
         ]
@@ -179,45 +176,6 @@
       "bases:Create new base": false
     }
   },
-  "active": "9ecc003ded8fcdaf",
-  "lastOpenFiles": [
-    "matriz_riscos_dependencias.md",
-    "gaps_producao_readiness.md",
-    "Files/UFCD10792-FP2-Ficha_Prática-Aula2-ModelBinding.pdf",
-    "Files/UFCD10792-FP3-Ficha_Prática-Aula3-ExemploComBaseDados.pdf",
-    "Files/UFCD10792-TFinal-Enunciado_Oficial_Loja_Online.pdf",
-    "Files/UFCD10792-TFinal-Requisitos_Tecnicos_Loja_Online.pdf",
-    "Files/UFCD10792-TFinal-Rubrica_Avaliacao_Quantitativa_Loja_Online.pdf",
-    "Files/UFCD10792-FP1-FichaPrática-Aula1-ASP.NET_Core_MVC.pdf",
-    "adrs_decisoes_tecnicas.md",
-    "context/ref1.png",
-    "context/ref-LiquidShopNow.png",
-    "context/ref-LiquidNavBar.png",
-    "runbook_deploy.md",
-    "memory_index.md",
-    "matriz_testes_e2e.md",
-    "runbook_incidentes.md",
-    "backlog_priorizado.md",
-    "inventario_stock_operacao.md",
-    "kpis_dashboard_negocio.md",
-    "gestao_segredos_e_chaves.md",
-    "points.md",
-    "README.md",
-    "roadmap_produto.md",
-    "schema_sql_er.md",
-    "seguranca_owasp_checklist.md",
-    "plano_marketing_conteudo.md",
-    "plano_conversao_cro.md",
-    "plano_seo_ecommerce.md",
-    "plano_releases.md",
-    "qa_checklist_funcional.md",
-    "atendimento_pos_venda.md",
-    "logistica_envio_devolucao.md",
-    "checkout_pagamentos_estrategia.md",
-    "catalogo_modelo_comercial.md",
-    "privacidade_lgpd_gdpr.md",
-    "context/users.json",
-    "context",
-    "Files"
-  ]
+  "active": "93963271ad19bfc9",
+  "lastOpenFiles": []
 }
