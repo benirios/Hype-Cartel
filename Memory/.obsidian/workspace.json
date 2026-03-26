@@ -11,10 +11,14 @@
             "id": "9ecc003ded8fcdaf",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "Resumo.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Resumo"
             }
           }
         ]
@@ -40,7 +44,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "Explorador de ficheiros"
             }
           },
           {
@@ -170,54 +174,58 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "switcher:Abrir Quick Switcher": false,
+      "graph:Abrir Visualização de diagrama de grafo": false,
+      "canvas:Criar novo Canvas": false,
+      "daily-notes:Abrir nota de hoje": false,
+      "templates:Inserir templates": false,
+      "command-palette:Abrir paleta de comando": false,
+      "bases:Criar nova base": false
     }
   },
   "active": "9ecc003ded8fcdaf",
   "lastOpenFiles": [
-    "matriz_riscos_dependencias.md",
-    "gaps_producao_readiness.md",
-    "Files/UFCD10792-FP2-Ficha_Prática-Aula2-ModelBinding.pdf",
-    "Files/UFCD10792-FP3-Ficha_Prática-Aula3-ExemploComBaseDados.pdf",
-    "Files/UFCD10792-TFinal-Enunciado_Oficial_Loja_Online.pdf",
-    "Files/UFCD10792-TFinal-Requisitos_Tecnicos_Loja_Online.pdf",
-    "Files/UFCD10792-TFinal-Rubrica_Avaliacao_Quantitativa_Loja_Online.pdf",
-    "Files/UFCD10792-FP1-FichaPrática-Aula1-ASP.NET_Core_MVC.pdf",
-    "adrs_decisoes_tecnicas.md",
+    "Architecture.md",
+    "Resumo.md",
+    "Security.md",
+    "Runbooks.md",
+    "Product.md",
+    "Ops.md",
+    "Obsidian_Config.md",
+    "memory_index.md",
+    "History.md",
+    "Decisions.md",
+    "_archive/resume_instructions.md",
+    "_archive/memory_index.md",
+    "_archive/steps.md",
+    "_archive/SQL_and_BusinessRules.md",
+    "_archive/seguranca_owasp_checklist.md",
+    "_archive/schema_sql_er.md",
+    "_archive/runbook_incidentes.md",
+    "_archive/runbook_deploy.md",
+    "_archive/roadmap_produto.md",
+    "_archive/README.md",
+    "_archive/qa_checklist_funcional.md",
+    "_archive/privacidade_lgpd_gdpr.md",
+    "_archive/points.md",
+    "_archive/plano_seo_ecommerce.md",
+    "_archive/plano_releases.md",
+    "_archive/plano_marketing_conteudo.md",
+    "_archive/Files/UFCD10792-TFinal-Rubrica_Avaliacao_Quantitativa_Loja_Online.pdf",
+    "_archive/Files/UFCD10792-TFinal-Requisitos_Tecnicos_Loja_Online.pdf",
+    "_archive/Files/UFCD10792-TFinal-Enunciado_Oficial_Loja_Online.pdf",
+    "_archive/Files/UFCD10792-FP3-Ficha_Prática-Aula3-ExemploComBaseDados.pdf",
+    "_archive/Files/UFCD10792-FP2-Ficha_Prática-Aula2-ModelBinding.pdf",
+    "_archive/Files/UFCD10792-FP1-FichaPrática-Aula1-ASP.NET_Core_MVC.pdf",
+    "_archive/Files",
+    "_archive/context/users.json",
+    "_archive/context/ref1.png",
+    "_archive/context/ref-LiquidShopNow.png",
+    "_archive/context/ref-LiquidNavBar.png",
+    "_archive/context",
+    "_archive",
     "context/ref1.png",
     "context/ref-LiquidShopNow.png",
-    "context/ref-LiquidNavBar.png",
-    "runbook_deploy.md",
-    "memory_index.md",
-    "matriz_testes_e2e.md",
-    "runbook_incidentes.md",
-    "backlog_priorizado.md",
-    "inventario_stock_operacao.md",
-    "kpis_dashboard_negocio.md",
-    "gestao_segredos_e_chaves.md",
-    "points.md",
-    "README.md",
-    "roadmap_produto.md",
-    "schema_sql_er.md",
-    "seguranca_owasp_checklist.md",
-    "plano_marketing_conteudo.md",
-    "plano_conversao_cro.md",
-    "plano_seo_ecommerce.md",
-    "plano_releases.md",
-    "qa_checklist_funcional.md",
-    "atendimento_pos_venda.md",
-    "logistica_envio_devolucao.md",
-    "checkout_pagamentos_estrategia.md",
-    "catalogo_modelo_comercial.md",
-    "privacidade_lgpd_gdpr.md",
-    "context/users.json",
-    "context",
-    "Files"
+    "context/ref-LiquidNavBar.png"
   ]
 }
