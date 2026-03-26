@@ -18,9 +18,11 @@ MOSAIC_DIR = os.path.expanduser('/Users/beni/Downloads/mosaic')
 # Import local agent module (same directory)
 try:
     from . import agent as _agent_mod
+    from . import decision as _decision
 except Exception:
     # fallback to relative import when executed as script
     import agent as _agent_mod
+    import decision as _decision
 
 
 def list_tracks():
@@ -114,6 +116,47 @@ def suggest():
         return jsonify({'ok': True, 'action': 'set_crossfade', 'value': v})
 
     return jsonify({'ok': False, 'error': 'unknown_type', 'received': data}), 400
+
+
+@APP.route('/suggest_nl', methods=['POST'])
+def suggest_nl():
+    """Accept plain-text suggestions and map them to autopilot actions via the decision module."""
+    data = request.get_json(silent=True) or {}
+    text = data.get('text', '')
+    action = None
+    try:
+        action = _decision.decide(text)
+    except Exception as e:
+        return jsonify({'ok': False, 'error': 'decision_failed', 'exc': str(e)}), 500
+    if not action:
+        return jsonify({'ok': False, 'error': 'no_action'}), 400
+    # Map action dict to existing handlers
+    t = action.get('type')
+    params = action.get('params', {})
+    if t == 'play_next':
+        cf = float(params.get('crossfade', 8.0))
+        thr = Thread(target=_load_and_play, args=(2, True, params.get('port')), daemon=True)
+        thr.start()
+        Thread(target=lambda: (time.sleep(0.7), _do_crossfade(cf, params.get('port'))), daemon=True).start()
+        return jsonify({'ok': True, 'action': 'play_next', 'crossfade': cf})
+    if t == 'load_and_play':
+        slot = int(params.get('slot', 1))
+        Thread(target=_load_and_play, args=(slot, True, params.get('port')), daemon=True).start()
+        return jsonify({'ok': True, 'action': 'load_and_play', 'slot': slot})
+    if t == 'crossfade_now':
+        cf = float(params.get('crossfade', 8.0))
+        Thread(target=_do_crossfade, args=(cf, params.get('port')), daemon=True).start()
+        return jsonify({'ok': True, 'action': 'crossfade_now', 'crossfade': cf})
+    if t == 'set_crossfade':
+        v = int(params.get('value', 64))
+        agent = _agent_mod.MidiAgent(port_name=params.get('port'))
+        try:
+            agent.send_cc(24, v)
+        finally:
+            agent.close()
+        return jsonify({'ok': True, 'action': 'set_crossfade', 'value': v})
+
+    return jsonify({'ok': False, 'error': 'unknown_action', 'action': action}), 400
 
 
 def run_server(host='127.0.0.1', port=5000):
