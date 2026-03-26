@@ -1,0 +1,3 @@
+[console_scripts]
+cli-anything-mixxx = cli_anything.mixxx.mixxx_cli:main
+
