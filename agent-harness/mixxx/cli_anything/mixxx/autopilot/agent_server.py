@@ -8,7 +8,7 @@ Endpoints:
 This server maps high-level suggestions to MIDI actions by importing the existing MidiAgent.
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from threading import Thread
 import time, os
 
@@ -119,6 +119,12 @@ def suggest():
 def run_server(host='127.0.0.1', port=5000):
     print(f'Starting autopilot server on http://{host}:{port}')
     APP.run(host=host, port=port)
+
+
+@APP.route('/ui')
+def ui():
+    # serve the simple autopilot UI
+    return send_from_directory(os.path.dirname(__file__), 'agent_server_ui.html')
 
 
 if __name__ == '__main__':

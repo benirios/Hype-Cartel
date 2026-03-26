@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mixxx Autopilot UI</title>
+  <style>body{font-family:sans-serif;margin:20px}button{margin:4px}</style>
+</head>
+<body>
+  <h2>Mixxx Autopilot</h2>
+  <div id="status">Loading...</div>
+  <h3>Tracks</h3>
+  <ul id="tracks"></ul>
+  <div>
+    <label>Crossfade seconds: <input id="crossfade" type="number" value="8" min="1" max="30"></label>
+    <button id="playNext">Play next (load into deck2 & crossfade)</button>
+    <button id="crossfadeNow">Crossfade now</button>
+  </div>
+  <script>
+    async function status(){
+      const s = await fetch('/status').then(r=>r.json()).catch(()=>null);
+      document.getElementById('status').textContent = s ? 'Server OK — tracks: '+s.tracks : 'Server unreachable';
+    }
+    async function loadTracks(){
+      const res = await fetch('/tracks').then(r=>r.json()).catch(()=>({tracks:[]}));
+      const ul = document.getElementById('tracks'); ul.innerHTML='';
+      res.tracks.forEach(t=>{const li=document.createElement('li'); li.textContent=t; ul.appendChild(li)});
+    }
+    document.getElementById('playNext').addEventListener('click', async ()=>{
+      const cf = parseFloat(document.getElementById('crossfade').value) || 8;
+      await fetch('/suggest', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type:'play_next', params:{crossfade:cf}})});
+      alert('Requested play_next');
+    });
+    document.getElementById('crossfadeNow').addEventListener('click', async ()=>{
+      const cf = parseFloat(document.getElementById('crossfade').value) || 8;
+      await fetch('/suggest', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type:'crossfade_now', params:{crossfade:cf}})});
+      alert('Requested crossfade_now');
+    });
+    status(); loadTracks(); setInterval(loadTracks,5000); setInterval(status,5000);
+  </script>
+</body>
+</html>
